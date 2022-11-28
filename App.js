@@ -1,20 +1,53 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from "react-native";
+import React, { useState } from "react";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import TabNavigator from "./app/navigation/TabNavigator";
+import AuthNavigator from "./app/navigation/AuthNavigator";
+import { auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import colors from "./app/config/colors";
+import { useFonts } from "expo-font";
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: colors.light,
   },
-});
+};
+
+const App = () => {
+  const [user, setUser] = useState(null);
+  React.useEffect(() => {
+    firebaseAuthState();
+  }, []);
+
+  const firebaseAuthState = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+      } else {
+        setUser(null);
+      }
+    });
+  };
+  const [fontsLoaded] = useFonts({
+    InterBold: require("./assets/fonts/Inter-Bold.ttf"),
+    InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
+    InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
+    InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
+    InterLight: require("./assets/fonts/Inter-Light.ttf"),
+  });
+
+  if (!fontsLoaded) return null;
+  return (
+    <NavigationContainer theme={theme}>
+      {user ? <TabNavigator /> : <AuthNavigator />}
+    </NavigationContainer>
+  );
+};
+
+export default App;
+
+const styles = StyleSheet.create({});
