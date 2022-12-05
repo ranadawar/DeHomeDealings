@@ -1,11 +1,12 @@
 import {
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
   Image,
   KeyboardAvoidingView,
+  Alert,
   Modal,
+  ScrollView,
 } from "react-native";
 import React from "react";
 import colors from "../config/colors";
@@ -20,81 +21,109 @@ import * as yup from "yup";
 
 import LottieView from "lottie-react-native";
 import MainScreen from "../components/MainScreen";
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { randomString } from "../global/functions";
+import { UserContext } from "../context/userContext";
 
 const reportValidationSchema = yup.object().shape({
   title: yup.string().required().min(5).max(20).label("Title"),
   description: yup.string().required().min(15).max(1200),
-  user: yup.string(),
 });
 
 const ReportProblemScreen = ({ navigation }) => {
+  const [loading, setLoading] = React.useState(false);
+  const { user, setUser } = React.useContext(UserContext);
+
+  React.useEffect(() => {
+    console.log("Report Problem Screen", user);
+  }, [user]);
+
   const handleSubmit = async (values) => {
+    setLoading(true);
     const docId = randomString(25);
+
+    const currentUser = user;
     try {
       setDoc(doc(db, "problems", docId), {
         title: values.title,
         description: values.description,
-        user: auth().currentUser.uid,
+        docId: docId,
+        currentUser,
+        userId: auth.currentUser.uid,
         status: "pending",
       });
+      setLoading(false);
+      Alert.alert("Success", "Your problem has been reported successfully.");
+      navigation.goBack();
     } catch (error) {
-      console.log(error);
+      setLoading(false);
+      Alert.alert("Error", error.message);
     }
   };
+
   return (
     <>
       <MainScreen>
         <View style={styles.container}>
-          <View style={styles.headingContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.iconContainer}
-            >
-              <MaterialCommunityIcons
-                name="chevron-left"
-                size={30}
-                color={COLORS.primary}
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.headingContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={styles.iconContainer}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={30}
+                  color={COLORS.primary}
+                />
+              </TouchableOpacity>
+              <ExtraLargeText>Report a Problem</ExtraLargeText>
+            </View>
+            <View style={styles.imageContainer}>
+              <Image
+                source={require("../../assets/svgs/problem.png")}
+                style={styles.image}
               />
-            </TouchableOpacity>
-            <ExtraLargeText>Report a Problem</ExtraLargeText>
-          </View>
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../assets/svgs/problem.png")}
-              style={styles.image}
-            />
-          </View>
-          <KeyboardAvoidingView>
-            <AppForm
-              initialValues={{ title: "", description: "", user: "" }}
-              validationSchema={reportValidationSchema}
-              onSubmit={(values) => handleSubmit(values)}
-            >
-              <KeyboardAvoidingView style={styles.formContainer}>
-                <AppFormField
-                  placeholder="Enter Title"
-                  icon="format-title"
-                  name="title"
-                  iconColor={COLORS.secondary}
-                />
-                <AppFormField
-                  placeholder="Enter Description"
-                  icon="details"
-                  name="description"
-                  iconColor={COLORS.secondary}
-                  keyboardType="email-address"
-                  multiline
-                  numberOfLines={8}
-                />
-                <SubmitButton title="Report" />
-              </KeyboardAvoidingView>
-            </AppForm>
-          </KeyboardAvoidingView>
+            </View>
+            <KeyboardAvoidingView>
+              <AppForm
+                initialValues={{ title: "", description: "", user: "" }}
+                validationSchema={reportValidationSchema}
+                onSubmit={(values) => handleSubmit(values)}
+              >
+                <KeyboardAvoidingView style={styles.formContainer}>
+                  <AppFormField
+                    placeholder="Enter Title"
+                    icon="format-title"
+                    name="title"
+                    iconColor={COLORS.secondary}
+                  />
+                  <AppFormField
+                    placeholder="Enter Description"
+                    icon="details"
+                    name="description"
+                    iconColor={COLORS.secondary}
+                    keyboardType="email-address"
+                    multiline
+                    numberOfLines={8}
+                  />
+                  <SubmitButton title="Report" />
+                </KeyboardAvoidingView>
+              </AppForm>
+            </KeyboardAvoidingView>
+          </ScrollView>
         </View>
       </MainScreen>
+      <Modal visible={loading}>
+        <View style={{ flex: 1 }}>
+          <LottieView
+            autoPlay
+            loop
+            source={require("../../assets/animations/problem.json")}
+          />
+        </View>
+      </Modal>
     </>
   );
 };

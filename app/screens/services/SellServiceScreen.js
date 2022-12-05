@@ -28,12 +28,12 @@ import servicecolors from "../../config/servicecolors";
 import { auth, db } from "../../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import MainScreen from "../../components/MainScreen";
+import { UserContext } from "../../context/userContext";
 
 const postAdInitialValues = {
   title: "",
   description: "",
   address: "",
-  total: "",
   userId: "",
   category: null,
   city: null,
@@ -42,13 +42,38 @@ const postAdInitialValues = {
   rating: "",
 };
 const postAdValidationSchema = yup.object().shape({
-  title: yup.string().required().min(4).max(35).label("Title"),
-  description: yup.string().required().min(15).label("Description"),
-  address: yup.string().required().min(10).max(30).label("Address"),
-  total: yup.number().required().min(1000).max(1000000000).label("Total"),
-  category: yup.object().required().nullable().label("Category"),
-  city: yup.object().required().nullable().label("City"),
-  area: yup.object().required().nullable().label("Area"),
+  title: yup
+    .string()
+    .required()
+    .min(4)
+    .max(35)
+    .label("Title"),
+  description: yup
+    .string()
+    .required()
+    .min(15)
+    .label("Description"),
+  address: yup
+    .string()
+    .required()
+    .min(10)
+    .max(30)
+    .label("Address"),
+  category: yup
+    .object()
+    .required()
+    .nullable()
+    .label("Category"),
+  city: yup
+    .object()
+    .required()
+    .nullable()
+    .label("City"),
+  area: yup
+    .object()
+    .required()
+    .nullable()
+    .label("Area"),
   userId: yup.string(),
   rating: yup.string(),
   postedTime: "",
@@ -57,6 +82,7 @@ const postAdValidationSchema = yup.object().shape({
 const SellServiceScreen = ({ navigation }) => {
   const [posted, setPosted] = useState(false);
   const [errorPosted, setErrorPosted] = useState(false);
+  const { user, setUser } = React.useContext(UserContext);
   const postData = async (values) => {
     console.log("entered");
     const tareekh = new Date().toDateString();
@@ -66,14 +92,14 @@ const SellServiceScreen = ({ navigation }) => {
         title: values.title,
         description: values.description,
         address: values.address,
-        total: values.total,
+        total: "1000",
         category: values.category,
         city: values.city,
         area: values.area,
-
         userId: auth.currentUser.uid,
         postedTime: tareekh,
-        rating: "5",
+        rating: 5,
+        postedBy: user,
       });
       setPosted(true);
     } catch (error) {
@@ -123,13 +149,6 @@ const SellServiceScreen = ({ navigation }) => {
                     icon="google-maps"
                     name="address"
                     iconColor={COLORS.secondary}
-                  />
-                  <AppFormField
-                    placeholder="Enter Price"
-                    icon="cash-check"
-                    name="total"
-                    iconColor={COLORS.secondary}
-                    keyboardType="number-pad"
                   />
                   <AppFormPicker
                     items={serviceTypes}
@@ -202,7 +221,7 @@ export default SellServiceScreen;
 
 const styles = StyleSheet.create({
   formContainer: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
   },
   imageTop: {
     width: 200,
@@ -215,6 +234,5 @@ const styles = StyleSheet.create({
   scrolling: {
     flex: 1,
     alignItems: "center",
-    paddingRight: 20,
   },
 });

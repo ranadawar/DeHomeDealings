@@ -37,6 +37,10 @@ const ServiceListingDetails = ({ route, navigation }) => {
           </View>
           <View style={styles.btnContainer}>
             <AppButton
+              title="Book Now!"
+              onPress={() => navigation.navigate("sBooking", data)}
+            />
+            <AppButton
               title="Call Us Now!"
               color={colors.secondary}
               onPress={() => Linking.openURL(`tel:${data.total}`)}

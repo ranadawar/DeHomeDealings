@@ -8,6 +8,9 @@ import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import colors from "./app/config/colors";
 import { useFonts } from "expo-font";
+import { UserProvider } from "./app/context/userContext";
+import { ListingsProvider } from "./app/context/listingContext";
+import { AgreementsProvider } from "./app/context/agreementContext";
 
 const theme = {
   ...DefaultTheme,
@@ -42,9 +45,15 @@ const App = () => {
 
   if (!fontsLoaded) return null;
   return (
-    <NavigationContainer theme={theme}>
-      {user ? <TabNavigator /> : <AuthNavigator />}
-    </NavigationContainer>
+    <AgreementsProvider>
+      <ListingsProvider>
+        <UserProvider>
+          <NavigationContainer theme={theme}>
+            {user ? <TabNavigator /> : <AuthNavigator />}
+          </NavigationContainer>
+        </UserProvider>
+      </ListingsProvider>
+    </AgreementsProvider>
   );
 };
 

@@ -58,7 +58,10 @@ const validationSchema = yup.object().shape({
   purpose: yup.string().label("Purpose"),
   propertyType: yup.string().label("Property Type"),
   city: yup.object().label("City"),
-  area: yup.object().nullable().label("Area"),
+  area: yup
+    .object()
+    .nullable()
+    .label("Area"),
   rating: yup.object().label("Rating"),
   userType: yup.object().label("User Type"),
   numOfRoomsFrom: yup.number().label("Number of Rooms from"),
@@ -219,7 +222,9 @@ const SearchHouse = ({ navigation }) => {
                 iconColor={COLORS.secondary}
                 keyboardType="number-pad"
               />
-              <SubmitButton title="Search" color={servicecolors.seven} />
+              <View style={{ paddingBottom: 70, marginVertical: 15 }}>
+                <SubmitButton title="Search" color={COLORS.primary} />
+              </View>
             </AppForm>
           </View>
         </ScrollView>

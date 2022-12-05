@@ -9,7 +9,8 @@ import { AppForm, AppFormField, SubmitButton } from "../components/form";
 import * as yup from "yup";
 import servicecolors from "../config/servicecolors";
 import { auth, db } from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { UserContext } from "../context/userContext";
 
 const validationSchema = yup.object().shape({
   price: yup.string().required().min(1).max(12).label("Price"),
@@ -19,8 +20,9 @@ const validationSchema = yup.object().shape({
 const SendOfferScreen = ({ route }) => {
   const navigation = useNavigation();
   const data = route.params;
+  const { user, setUser } = React.useContext(UserContext);
   React.useEffect(() => {
-    console.log(data);
+    console.log("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU", user);
   }, []);
 
   const handleSendOffer = (values) => {
@@ -33,26 +35,16 @@ const SendOfferScreen = ({ route }) => {
       status: "pending",
       user: auth.currentUser.uid,
     };
-    const newArray = [...targetData, myObject];
-
-    setDoc(
-      doc(db, "listings", docId),
-      {
-        offers: newArray,
-      },
-      { merge: true }
-    )
+    const updatedData = [...targetData, myObject];
+    updateDoc(doc(db, "listings", docId), {
+      offers: updatedData,
+    })
       .then(() => {
-        console.log("Document successfully written!");
-        Alert.alert("Offer Sent", "Your offer has been sent successfully", [
-          {
-            text: "OK",
-            onPress: () => navigation.goBack(),
-          },
-        ]);
+        Alert.alert("Success", "Offer has been sent successfully.");
+        navigation.goBack();
       })
       .catch((error) => {
-        console.error("Error writing document: ", error);
+        Alert.alert("Error", error.message);
       });
   };
   return (

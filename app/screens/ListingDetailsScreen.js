@@ -27,70 +27,83 @@ import QRCode from "react-native-qrcode-svg";
 function ListingDetailsScreen({ route, navigation }) {
   const data = route.params;
   React.useEffect(() => {
-    console.log("data", data.listing);
+    console.log("data", data);
   }, []);
+
+  const handleBookings = () => {
+    navigation.navigate("BookingHouse", data);
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.light }}>
       <ScrollView style={{ flex: 1 }}>
-        <View style={styles.imageContainer}>
-          <Image style={styles.image} source={{ uri: data.listing.image }} />
-          <View style={styles.ratingContainer}>
-            <MaterialCommunityIcons name="star" size={20} color="yellow" />
-            <MediumText style={{ color: "white", marginHorizontal: 5 }}>
-              {data.listing.rating}
-            </MediumText>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("detailedImage", data.image)}
+        >
+          <View style={styles.imageContainer}>
+            <Image style={styles.image} source={{ uri: data.image[0] }} />
+            <View style={styles.ratingContainer}>
+              <MaterialCommunityIcons name="star" size={20} color="yellow" />
+              <MediumText style={{ color: "white", marginHorizontal: 5 }}>
+                {data.rating}
+              </MediumText>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
         <View style={styles.detailsContainer}>
           <View style={styles.priceContainer}>
             <RegularText style={styles.price}>
-              Total PKR: {data.listing.total}
+              Total PKR: {data.total}
             </RegularText>
           </View>
           <View style={styles.titleContainer}>
-            <MediumText style={styles.title}>{data.listing.title}</MediumText>
-            <RegularText>📍{data.listing.address}</RegularText>
-            <LightText>📍{data.listing.area.label}</LightText>
+            <MediumText style={styles.title}>{data.title}</MediumText>
+            <RegularText>📍{data.address}</RegularText>
+            <LightText>📍{data.area.label}</LightText>
           </View>
         </View>
         <View style={styles.featuresContainer}>
-          <IconicText icon="move-resize" title={data.listing.size} />
-          <IconicText icon="bed-double-outline" title={data.listing.bedrooms} />
-          <IconicText icon="bathtub-outline" title={data.listing.bathrooms} />
+          <IconicText icon="move-resize" title={data.size} />
+          <IconicText icon="bed-double-outline" title={data.bedrooms} />
+          <IconicText icon="bathtub-outline" title={data.bathrooms} />
         </View>
         <View style={styles.descriptionContainer}>
           <MediumText style={{ color: COLORS.primary }}>Description</MediumText>
-          <LightText>{data.listing.description}</LightText>
+          <LightText>{data.description}</LightText>
         </View>
 
         <View style={styles.propertyInfo}>
           <MediumText style={{ color: COLORS.primary }}>
             Property Type
           </MediumText>
-          <CategoryPickerItem item={data.listing.propertyType} />
+          <CategoryPickerItem item={data.propertyType} />
           <MediumText style={{ color: COLORS.primary }}>Purpose</MediumText>
-          <CategoryPickerItem item={data.listing.category} />
+          <CategoryPickerItem item={data.category} />
           <MediumText style={{ color: COLORS.primary }}>City</MediumText>
-          <CategoryPickerItem item={data.listing.city} />
+          <CategoryPickerItem item={data.city} />
         </View>
         <View style={styles.btnContainer}>
           <CallToAction
             title="Call"
             style={{ backgroundColor: servicecolors.seven }}
-            onPress={() => Linking.openURL(`tel:${data.listing.phoneNumber}`)}
+            onPress={() => Linking.openURL(`tel:${data.phoneNumber}`)}
           />
           <CallToAction
             title="Chat"
             style={{ backgroundColor: servicecolors.three }}
-            onPress={() => Alert.alert("Under Development")}
+            onPress={() => navigation.navigate("inbox", data)}
           />
         </View>
         <View style={styles.sendOfferContainer}>
           <AppButton
-            title="Send Offer"
+            title="Send Counter Offer"
             color={colors.primary}
-            onPress={() => navigation.navigate("sendofferhome", data.listing)}
+            onPress={() => navigation.navigate("sendofferhome", data)}
+          />
+          <AppButton
+            title="Book Now!"
+            color={colors.secondary}
+            onPress={handleBookings}
           />
         </View>
         <View
@@ -100,11 +113,11 @@ function ListingDetailsScreen({ route, navigation }) {
             alignItems: "center",
           }}
         >
-          <QRCode value={data.listing.listingId} />
+          <QRCode value={data.listingId} />
         </View>
 
         <View style={styles.ownerDetailsContainer}>
-          <PersonDetailsContainer />
+          <PersonDetailsContainer ownerName={data.postedBy.username} />
         </View>
       </ScrollView>
     </View>

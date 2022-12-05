@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, ScrollView, Modal } from "react-native";
 import React from "react";
 import colors from "../config/colors";
 import { COLORS, FONTS } from "../constants/theme";
@@ -7,74 +7,99 @@ import LinkComponents from "../components/LinkComponents";
 import AppButton from "../components/AppButton";
 import { auth } from "../../firebase";
 import MainScreen from "../components/MainScreen";
-
+import LottieView from "lottie-react-native";
+import { UserContext } from "../context/userContext";
 const ProfileScreen = ({ navigation }) => {
+  const { user, userDataLoading } = React.useContext(UserContext);
+
+  React.useEffect(() => {
+    console.log(user);
+  }, [user]);
   return (
-    <MainScreen>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-        <ScreenHeader
-          headerText="Profile"
-          onPress={() => navigation.goBack()}
-        />
-        <View style={styles.topContainer}>
-          <View style={styles.imageContainer}>
-            <Image
-              resizeMode="contain"
-              source={require("../../assets/images/many/mosh.jpg")}
-              style={styles.image}
+    <>
+      <MainScreen>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.container}
+        >
+          <ScreenHeader
+            headerText="Profile"
+            onPress={() => navigation.goBack()}
+          />
+          <View style={styles.topContainer}>
+            <View style={styles.imageContainer}>
+              <Image
+                resizeMode="contain"
+                source={require("../../assets/images/many/mosh.jpg")}
+                style={styles.image}
+              />
+            </View>
+            <Text style={styles.name}>{user.username}</Text>
+            <Text style={styles.bioText}>{user.email}</Text>
+          </View>
+          <View style={styles.midContainer}>
+            <Text style={styles.midTitle}>My Housing</Text>
+            <LinkComponents
+              title="My Listings"
+              icon="post"
+              onPress={() => navigation.navigate("Mylisting")}
+            />
+            <LinkComponents
+              title="My Sent Offers"
+              icon="cash"
+              onPress={() => navigation.navigate("mysentoffers")}
+            />
+            <LinkComponents
+              title="Reports"
+              iconStyle={colors.secondary}
+              icon="information"
+              onPress={() => navigation.navigate("Reports")}
+            />
+            <LinkComponents title="Favorites" iconStyle="blue" icon="heart" />
+            <LinkComponents title="Payments" iconStyle="green" icon="cash" />
+            <LinkComponents
+              title="Sell Service"
+              iconStyle="brown"
+              icon="face-man"
+              onPress={() => navigation.navigate("Selling")}
             />
           </View>
-          <Text style={styles.name}>Dawar</Text>
-          <Text style={styles.bioText}>{auth.currentUser.email}</Text>
-        </View>
-        <View style={styles.midContainer}>
-          <Text style={styles.midTitle}>My Housing</Text>
-          <LinkComponents
-            title="My Listings"
-            icon="post"
-            onPress={() => navigation.navigate("Mylisting")}
-          />
-          <LinkComponents
-            title="Reports"
-            iconStyle={colors.secondary}
-            icon="information"
-            onPress={() => navigation.navigate("Reports")}
-          />
-          <LinkComponents title="Favorites" iconStyle="blue" icon="heart" />
-          <LinkComponents title="Payments" iconStyle="green" icon="cash" />
-          <LinkComponents
-            title="Sell Service"
-            iconStyle="brown"
-            icon="face-man"
-            onPress={() => navigation.navigate("Selling")}
-          />
-        </View>
-        <View style={styles.bottomContainer}>
-          <Text style={styles.midTitle}>General</Text>
-          <LinkComponents
-            title="Update Profile"
-            iconStyle="orange"
-            icon="update"
-            onPress={() => navigation.navigate("updateprofile")}
-          />
-          <LinkComponents
-            title="Contact Support"
-            iconStyle="purple"
-            icon="help-box"
-          />
-          <LinkComponents
-            title="Report a problem"
-            iconStyle="#ee6c4d"
-            icon="alarm-multiple"
-            onPress={() => navigation.navigate("report")}
-          />
-        </View>
+          <View style={styles.bottomContainer}>
+            <Text style={styles.midTitle}>General</Text>
+            <LinkComponents
+              title="Update Profile"
+              iconStyle="orange"
+              icon="update"
+              onPress={() => navigation.navigate("updateprofile")}
+            />
+            <LinkComponents
+              title="Contact Support"
+              iconStyle="purple"
+              icon="help-box"
+            />
+            <LinkComponents
+              title="Report a problem"
+              iconStyle="#ee6c4d"
+              icon="alarm-multiple"
+              onPress={() => navigation.navigate("report")}
+            />
+          </View>
 
-        <View style={{ marginVertical: 30, marginHorizontal: 20 }}>
-          <AppButton title="log Out" onPress={() => auth.signOut()} />
+          <View style={{ marginVertical: 30, marginHorizontal: 20 }}>
+            <AppButton title="log Out" onPress={() => auth.signOut()} />
+          </View>
+        </ScrollView>
+      </MainScreen>
+      <Modal visible={userDataLoading}>
+        <View style={{ flex: 1 }}>
+          <LottieView
+            source={require("../../assets/animations/house.json")}
+            autoPlay
+            loop
+          />
         </View>
-      </ScrollView>
-    </MainScreen>
+      </Modal>
+    </>
   );
 };
 

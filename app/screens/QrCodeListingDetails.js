@@ -3,12 +3,14 @@ import {
   Text,
   View,
   Image,
+  TouchableOpacity,
   ScrollView,
+  Alert,
   Modal,
-  Linking,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { COLORS } from "../constants/theme";
+import { Linking } from "react-native";
 
 import servicecolors from "../config/servicecolors";
 import colors from "../config/colors";
@@ -17,61 +19,45 @@ import { RegularText, MediumText, LightText } from "../components/texts";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import IconicText from "../components/IconicText";
+import AppButton from "../components/AppButton";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import PersonDetailsContainer from "../components/PersonDetailsContainer";
 import CallToAction from "../components/CallToAction";
 
 import LottieView from "lottie-react-native";
+
+import QRCode from "react-native-qrcode-svg";
+import { getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import ActivityIndicator from "../components/animation/ActivityIndicator";
-
 function QrCodeListingDetails({ route, navigation }) {
-  const qrCodeData = route.params;
+  const data = route.params;
+  const [loading, setLoading] = React.useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [listings, setListings] = useState([]);
-  const [data, setData] = useState({});
-  const [filteredData, setFilteredData] = useState(null);
-  const [yesShow, setYesShow] = useState(null);
-  const [rawData, setRawData] = useState(null);
-
-  useEffect(() => {
-    getListing();
-    console.log("qrCodeData", qrCodeData);
-  }, []);
-
-  const getListing = async () => {
-    try {
-      const docRef = doc(db, "listings", qrCodeData);
-      setLoading(true);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        console.log("The data I get is", docSnap.data());
-        setData(docSnap.data());
-        setLoading(false);
-      } else {
-        console.log("Document does not exist");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleBookings = () => {
+    navigation.navigate("BookingHouse", data);
   };
+
+  React.useEffect(() => {
+    console.log("mmmmmmmmmmmmmmmmddddddddddddd", data);
+  }, []);
 
   return (
     <>
       <View style={{ flex: 1, backgroundColor: colors.light }}>
-        <ActivityIndicator visible={loading} />
         <ScrollView style={{ flex: 1 }}>
-          <View style={styles.imageContainer}>
-            <Image style={styles.image} source={{ uri: data.image }} />
-            <View style={styles.ratingContainer}>
-              <MaterialCommunityIcons name="star" size={20} color="yellow" />
-              <MediumText style={{ color: "white", marginHorizontal: 5 }}>
-                {data.rating}
-              </MediumText>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("detailedImage", data.image)}
+          >
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: data.image[0] }} />
+              <View style={styles.ratingContainer}>
+                <MaterialCommunityIcons name="star" size={20} color="yellow" />
+                <MediumText style={{ color: "white", marginHorizontal: 5 }}>
+                  {data.rating}
+                </MediumText>
+              </View>
             </View>
-          </View>
+          </TouchableOpacity>
           <View style={styles.detailsContainer}>
             <View style={styles.priceContainer}>
               <RegularText style={styles.price}>
@@ -81,7 +67,7 @@ function QrCodeListingDetails({ route, navigation }) {
             <View style={styles.titleContainer}>
               <MediumText style={styles.title}>{data.title}</MediumText>
               <RegularText>📍{data.address}</RegularText>
-              <LightText>📍{data.label}</LightText>
+              <LightText>📍{data.area.label}</LightText>
             </View>
           </View>
           <View style={styles.featuresContainer}>
@@ -115,21 +101,42 @@ function QrCodeListingDetails({ route, navigation }) {
             <CallToAction
               title="Chat"
               style={{ backgroundColor: servicecolors.three }}
-              onPress={() => console.log("Chat")}
+              onPress={() => navigation.navigate("inbox", data)}
             />
           </View>
+          <View style={styles.sendOfferContainer}>
+            <AppButton
+              title="Send Counter Offer"
+              color={colors.primary}
+              onPress={() => navigation.navigate("sendofferhome", data)}
+            />
+            <AppButton
+              title="Book Now!"
+              color={colors.secondary}
+              onPress={handleBookings}
+            />
+          </View>
+          <View
+            style={{
+              height: 150,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <QRCode value={data.listingId} />
+          </View>
+
           <View style={styles.ownerDetailsContainer}>
-            <PersonDetailsContainer />
+            <PersonDetailsContainer ownerName={data.postedBy.username} />
           </View>
         </ScrollView>
       </View>
-
       <Modal visible={loading}>
         <View style={{ flex: 1 }}>
           <LottieView
-            loop
+            source={require("../../assets/animations/house.json")}
             autoPlay
-            source={require("../animations/loadlistings.json")}
+            loop
           />
         </View>
       </Modal>
@@ -185,6 +192,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 50,
     overflow: "hidden",
     elevation: 10,
+  },
+  sendOfferContainer: {
+    marginVertical: 10,
+    backgroundColor: colors.white,
+    marginHorizontal: 20,
+    borderRadius: 15,
+    padding: 15,
   },
   price: {
     color: COLORS.white,

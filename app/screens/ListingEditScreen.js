@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   Modal,
+  Text,
 } from "react-native";
 import React, { useState } from "react";
 
@@ -16,9 +17,10 @@ import {
   AppFormPicker,
   SubmitButton,
 } from "../components/form";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import * as yup from "yup";
-import { COLORS } from "../constants/theme";
+import { COLORS, FONTS } from "../constants/theme";
 
 import CategoryPickerItem from "../components/CategoryPickerItem";
 
@@ -26,9 +28,13 @@ import { propertyTypes, cities, dealCategories, areas } from "../data/store";
 import AppButton from "../components/AppButton";
 import servicecolors from "../config/servicecolors";
 import MainScreen from "../components/MainScreen";
-import { auth, db } from "../../firebase";
+import { auth, db, storage } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { randomString } from "../global/functions";
+import FormImagePicker from "../components/form/FormImagePicker";
+import moment from "moment";
+import { UserContext } from "../context/userContext";
+import { useContext } from "react";
 
 const postAdInitialValues = {
   title: "",
@@ -39,7 +45,7 @@ const postAdInitialValues = {
   bathrooms: "",
   user: null,
   size: "",
-  image: "",
+  images: [],
   category: null,
   city: null,
   area: null,
@@ -49,19 +55,69 @@ const postAdInitialValues = {
   phone: "",
 };
 const postAdValidationSchema = yup.object().shape({
-  title: yup.string().required().min(4).max(35).label("Title"),
-  description: yup.string().required().min(15).label("Description"),
-  address: yup.string().required().min(10).max(30).label("Address"),
-  total: yup.number().required().min(1000).max(1000000000).label("Total"),
-  size: yup.number().required().min(1).max(1000).label("Size"),
-  bedrooms: yup.number().required().min(1).max(10).label("Bedrooms"),
-  bathrooms: yup.number().required().min(1).max(10).label("Bathrooms"),
-  category: yup.object().required().nullable().label("Category"),
-  city: yup.object().required().nullable().label("City"),
-  area: yup.object().required().nullable().label("Area"),
-  propertyType: yup.object().required().nullable().label("Property Type"),
+  title: yup
+    .string()
+    .required()
+    .min(4)
+    .max(35)
+    .label("Title"),
+  description: yup
+    .string()
+    .required()
+    .min(15)
+    .label("Description"),
+  address: yup
+    .string()
+    .required()
+    .min(10)
+    .max(30)
+    .label("Address"),
+  total: yup
+    .number()
+    .required()
+    .min(1000)
+    .max(1000000000)
+    .label("Total"),
+  size: yup
+    .number()
+    .required()
+    .min(1)
+    .max(1000)
+    .label("Size"),
+  bedrooms: yup
+    .number()
+    .required()
+    .min(1)
+    .max(10)
+    .label("Bedrooms"),
+  bathrooms: yup
+    .number()
+    .required()
+    .min(1)
+    .max(10)
+    .label("Bathrooms"),
+  category: yup
+    .object()
+    .required()
+    .nullable()
+    .label("Category"),
+  city: yup
+    .object()
+    .required()
+    .nullable()
+    .label("City"),
+  area: yup
+    .object()
+    .required()
+    .nullable()
+    .label("Area"),
+  propertyType: yup
+    .object()
+    .required()
+    .nullable()
+    .label("Property Type"),
   userId: yup.string(),
-  image: yup.string(),
+  image: yup.array().min(1, "Please select at least one image."),
   rating: yup.string(),
   phone: yup.string(),
 });
@@ -69,20 +125,87 @@ const postAdValidationSchema = yup.object().shape({
 const ListingEditScreen = ({ navigation }) => {
   const [posted, setPosted] = useState(false);
   const [errorPosted, setErrorPosted] = useState(false);
-  const postData = async (values) => {
+  const [progress, setProgress] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [urls, setUrls] = useState([]);
+
+  const { user, setUser } = useContext(UserContext);
+
+  React.useEffect(() => {
+    console.log("user", user);
+  }, []);
+
+  const handleSubmit = async (myValues) => {
+    setProgress(0);
+    setModalVisible(true);
+
+    const images = myValues.images;
+    const values = myValues;
+    uploadImagesToFirebase(images, values);
+  };
+
+  const uploadImagesToFirebase = async (images, values) => {
+    const urls = [];
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      const fileName = Date.now() + randomString(5);
+      const storageRef = ref(storage, `listings/${fileName}.jpeg`);
+      //create blob
+      const blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function(e) {
+          console.log(e);
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", image, true);
+        xhr.send(null);
+      });
+      //upload blob
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+          Alert.alert("Error", "An error occurred while uploading.");
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            urls.push(downloadURL);
+            if (urls.length === images.length) {
+              //all images uploaded
+              setUrls(urls);
+              setProgress(0);
+              setModalVisible(false);
+              //save data to firebase
+              postData(urls, values);
+            }
+          });
+        }
+      );
+    }
+  };
+
+  const postData = async (images, values) => {
     console.log("entered");
-    const tareekh = new Date().toDateString();
-    const phoneNumber = auth.currentUser.phoneNumber;
     const docId = randomString(25);
 
     try {
-      console.log("hello");
       setDoc(doc(db, "listings", docId), {
         title: values.title,
         description: values.description,
         address: values.address,
         listingId: docId,
         total: values.total,
+        docId: docId,
         size: values.size,
         bedrooms: values.bedrooms,
         bathrooms: values.bathrooms,
@@ -90,15 +213,16 @@ const ListingEditScreen = ({ navigation }) => {
         category: values.category,
         city: values.city,
         area: values.area,
-        image:
-          "https://images.unsplash.com/photo-1568605114967-8130f3a36994?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-
+        image: images,
         userId: auth.currentUser.uid,
-        postedTime: tareekh,
+        postedBy: user,
+        postedTime: moment().format("MMMM Do YYYY, h:mm:ss a"),
         rating: "5",
-        phone: phoneNumber,
+        phone: user.phoneNumber,
+        offers: [],
       });
       setPosted(true);
+      setModalVisible(false);
     } catch (error) {
       Alert.alert("Error", error.message);
       setErrorPosted(true);
@@ -123,8 +247,11 @@ const ListingEditScreen = ({ navigation }) => {
                 <AppForm
                   initialValues={postAdInitialValues}
                   validationSchema={postAdValidationSchema}
-                  onSubmit={(values) => postData(values)}
+                  onSubmit={(values) => handleSubmit(values)}
                 >
+                  <View style={{ maxHeight: 125 }}>
+                    <FormImagePicker name="images" />
+                  </View>
                   <AppFormField
                     placeholder="Enter Title"
                     icon="text"
@@ -213,41 +340,36 @@ const ListingEditScreen = ({ navigation }) => {
           </ScrollView>
         </View>
       </MainScreen>
+      <Modal visible={modalVisible} animationType="slide">
+        <View style={{ flex: 1 }}>
+          <LottieView
+            autoPlay
+            loop
+            source={require("../../assets/animations/house.json")}
+          />
+        </View>
+      </Modal>
       <Modal visible={posted} animationType="slide">
-        {posted && (
-          <>
-            <AppButton
-              color={servicecolors.five}
-              title="Go Back"
-              onPress={() => {
-                setPosted(false);
-              }}
-            />
-            <View style={{ flex: 1 }}>
-              <LottieView
-                source={require("../animations/done.json")}
-                autoPlay
-                loop
-              />
-            </View>
-          </>
-        )}
-        {!posted && (
-          <>
-            <AppButton
-              color={servicecolors.five}
-              title="Retry"
-              onPress={() => setErrorPosted(false)}
-            />
-            <View style={{ flex: 1 }}>
-              <LottieView
-                source={require("../animations/error.json")}
-                autoPlay
-                loop
-              />
-            </View>
-          </>
-        )}
+        <View style={{ flex: 1 }}>
+          <LottieView
+            autoPlay
+            loop={false}
+            source={require("../../assets/animations/success.json")}
+          />
+        </View>
+        <View style={styles.bottomModalContainer}>
+          <Text style={styles.bottomModalTitle}>
+            Listing has been posted successfully
+          </Text>
+          <AppButton
+            title="Go Back"
+            color={COLORS.primary}
+            onPress={() => {
+              setPosted(false);
+              navigation.goBack();
+            }}
+          />
+        </View>
       </Modal>
     </>
   );
@@ -256,8 +378,17 @@ const ListingEditScreen = ({ navigation }) => {
 export default ListingEditScreen;
 
 const styles = StyleSheet.create({
+  bottomModalContainer: {
+    flex: 1,
+    marginHorizontal: 30,
+  },
+  bottomModalTitle: {
+    fontSize: 20,
+    fontFamily: FONTS.bol,
+    textAlign: "center",
+  },
   formContainer: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
   },
   imageTop: {
     width: 200,
@@ -270,6 +401,5 @@ const styles = StyleSheet.create({
   scrolling: {
     flex: 1,
     alignItems: "center",
-    paddingRight: 20,
   },
 });

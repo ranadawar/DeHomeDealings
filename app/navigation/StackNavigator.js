@@ -29,13 +29,22 @@ import QrCodeListingDetails from "../screens/QrCodeListingDetails";
 import UpdateProfile from "../screens/userscreens/UpdateProfile";
 import SendOfferScreen from "../screens/SendOfferScreen";
 import ViewMyHomeOffers from "../screens/ViewMyHomeOffers";
+import DetailedImages from "../screens/DetailedImages";
+import ServiceBookingForm from "../screens/services/ServiceBookingForm";
+import BookingHouse from "../screens/BookingHouse";
+import MyOffers from "../screens/MyOffers";
+import OwnerOfferDetailScreen from "../screens/OwnerOfferDetailScreen";
+import MySentOffers from "../screens/MySentOffers";
+import SeeMyOffersDetail from "../screens/SeeMyOffersDetail";
+import { CommentsScreen } from "../screens/CommentsScreen";
+import ViewTheAgreement from "../screens/ViewTheAgreement";
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Home" component={DrawerNavigator} />
+      <Stack.Screen name="mHome" component={DrawerNavigator} />
       <Stack.Screen name="Details" component={ListingDetailsScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
@@ -49,6 +58,7 @@ const StackNavigator = () => {
       <Stack.Screen name="inbox" component={InboxScreen} />
       <Stack.Screen name="qrcodescanner" component={QrCodeScanner} />
       <Stack.Screen name="qrDetails" component={QrCodeListingDetails} />
+      <Stack.Screen name="BookingHouse" component={BookingHouse} />
 
       <Stack.Screen name="report" component={ReportProblemScreen} />
 
@@ -58,6 +68,7 @@ const StackNavigator = () => {
       <Stack.Screen name="slistings" component={Slistings} />
       <Stack.Screen name="sdetails" component={ServicesDetailsScreen} />
       <Stack.Screen name="updateprofile" component={UpdateProfile} />
+      <Stack.Screen name="sBooking" component={ServiceBookingForm} />
       <Stack.Screen
         name="servicelistingdetails"
         component={ServiceListingDetails}
@@ -67,6 +78,16 @@ const StackNavigator = () => {
       <Stack.Screen name="sendofferhome" component={SendOfferScreen} />
 
       <Stack.Screen name="viewmyhomeoffers" component={ViewMyHomeOffers} />
+      <Stack.Screen name="detailedImage" component={DetailedImages} />
+      <Stack.Screen name="myoffers" component={MyOffers} />
+      <Stack.Screen
+        name="ownerOfferDetail"
+        component={OwnerOfferDetailScreen}
+      />
+      <Stack.Screen name="mysentoffers" component={MySentOffers} />
+      <Stack.Screen name="seemyofferdetail" component={SeeMyOffersDetail} />
+      <Stack.Screen name="commentscreen" component={CommentsScreen} />
+      <Stack.Screen name="viewtheagreement" component={ViewTheAgreement} />
     </Stack.Navigator>
   );
 };

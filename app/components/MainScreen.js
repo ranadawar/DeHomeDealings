@@ -1,9 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 import Constants from "expo-constants";
 const MainScreen = ({ children }) => {
-  return <View style={styles.mainContainer}>{children}</View>;
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.mainContainer}>{children}</View>
+    </SafeAreaView>
+  );
 };
 
 export default MainScreen;

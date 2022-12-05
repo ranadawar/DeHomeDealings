@@ -41,8 +41,18 @@ const agreementInitialValues = {
 };
 
 const agreementValidationSchema = yup.object().shape({
-  title: yup.string().required().min(1).max(25).label("Title"),
-  propertyAddress: yup.string().required().min(11).max(80).label("Address"),
+  title: yup
+    .string()
+    .required()
+    .min(1)
+    .max(25)
+    .label("Title"),
+  propertyAddress: yup
+    .string()
+    .required()
+    .min(11)
+    .max(80)
+    .label("Address"),
   uid: yup.string(),
   termsAndConditions: yup
     .string()
@@ -70,11 +80,7 @@ const AgreementScreen = ({ navigation }) => {
       const html = `<html>
       <body>
         <div style="align-items: center; justify-content: center">
-          <img
-            src="../../assets/images/housing.png"
-            style="height: 150px; width: 150px; margin: auto"
-            alt="google logo"
-          />
+         
           <h1>De Home Dealing</h1>
         </div>
         <div>
@@ -91,6 +97,7 @@ const AgreementScreen = ({ navigation }) => {
     `;
       const result = await printToFileAsync({ html: html, base64: false });
       await shareAsync(result.uri);
+      navigation.goBack();
       Alert.alert("Agreement Generated");
     } catch (error) {
       console.log(error);

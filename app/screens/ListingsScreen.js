@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  ScrollView,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -20,17 +22,20 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
 import MainScreen from "../components/MainScreen";
 import AppTextInput from "../components/AppTextInput";
+import { ListingsContext } from "../context/listingContext";
 
 const ListingsScreen = ({ navigation }) => {
-  const [listings, setListings] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  const [nftData, setNftData] = useState("");
-  const [searchData, setSearchData] = useState(listings);
 
-  useEffect(() => {
-    getLisings();
-    return;
+  const { listings, setListings, loadListings } = React.useContext(
+    ListingsContext
+  );
+  const [newData, setNewData] = React.useState(listings);
+
+  React.useEffect(() => {
+    console.log("Listings Screen", listings);
   }, []);
+
   const getLisings = async () => {
     try {
       setLoading(true);
@@ -48,23 +53,24 @@ const ListingsScreen = ({ navigation }) => {
       console.log(error);
     }
   };
+
   const handleSearch = (value) => {
-    if (!value.length) return setListings(listings);
+    if (!value.length) return setNewData(listings);
 
     const filteredData = listings.filter((item) =>
       item.title.toLowerCase().includes(value.toLowerCase())
     );
     if (filteredData.length) {
-      setListings(filteredData);
+      setNewData(filteredData);
     } else {
-      setListings(listings);
+      setNewData(listings);
     }
   };
 
   return (
     <>
       <MainScreen>
-        <View style={{ marginBottom: 70 }}>
+        <View style={{ flex: 1, paddingBottom: 40, marginBottom: 100 }}>
           <ActivityIndicator visible={loading} />
           <View style={styles.headerr}>
             <TouchableOpacity
@@ -79,36 +85,78 @@ const ListingsScreen = ({ navigation }) => {
             </TouchableOpacity>
             <LargeText style={{ color: COLORS.white }}>Listings</LargeText>
           </View>
-          <View style={{ paddingHorizontal: 5 }}>
-            <View style={styles.searchBoxStyle}>
-              <AppTextInput
-                placeholder="Search House"
-                onChangeText={(text) => handleSearch(text)}
-              />
-            </View>
-
-            <FlatList
-              data={listings}
-              keyExtractor={(item) => item.listingPosted}
-              renderItem={({ item }) => (
-                <Card
-                  rating="5"
-                  title={item.title}
-                  bedroom={item.bedrooms}
-                  bathroom={item.bathrooms}
-                  price={item.total}
-                  imgUrl={item.image}
-                  onPress={() => {
-                    navigation.navigate("Details", { listing: item });
-                  }}
-                  onPressHeart={() => Alert.alert("Added to favorite")}
+          {listings.length > 0 ? (
+            <View style={{ marginHorizontal: 10 }}>
+              <View style={styles.searchBoxStyle}>
+                <AppTextInput
+                  placeholder="Search House"
+                  onChangeText={(text) => handleSearch(text)}
+                  icon="magnify"
                 />
-              )}
-            />
-          </View>
+              </View>
+
+              <ScrollView
+                refreshControl={
+                  <RefreshControl refreshing={loading} onRefresh={getLisings} />
+                }
+              >
+                {newData.map((item, index) => {
+                  return (
+                    <View key={index}>
+                      <Card
+                        title={item.title}
+                        bedroom={item.bedrooms}
+                        bathroom={item.bathrooms}
+                        price={item.total}
+                        imgUrl={item.image[0]}
+                        onPress={() => {
+                          navigation.navigate("Details", item);
+                        }}
+                        onPressHeart={() => Alert.alert("Added to favorite")}
+                      />
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          ) : (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <LottieView
+                loop
+                autoPlay
+                source={require("../../assets/animations/empty.json")}
+              />
+
+              <LargeText style={{ color: COLORS.primary, textAlign: "center" }}>
+                No Listings Found
+              </LargeText>
+
+              <LargeText style={{ color: COLORS.primary, textAlign: "center" }}>
+                Please try again later
+              </LargeText>
+
+              <TouchableOpacity
+                style={{
+                  backgroundColor: COLORS.primary,
+                  padding: 10,
+                  borderRadius: 5,
+                  marginTop: 10,
+                }}
+                onPress={() => getLisings()}
+              >
+                <LargeText style={{ color: COLORS.white }}>Try Again</LargeText>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </MainScreen>
-      <Modal visible={loading}>
+      <Modal visible={loadListings}>
         <View style={{ flex: 1 }}>
           <LottieView
             loop
@@ -144,6 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   searchBoxStyle: {
-    marginHorizontal: 5,
+    marginHorizontal: 10,
+    marginVertical: 10,
   },
 });

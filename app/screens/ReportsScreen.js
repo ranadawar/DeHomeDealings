@@ -7,12 +7,9 @@ import MainScreen from "../components/MainScreen";
 const ReportsScreen = ({ navigation }) => {
   return (
     <MainScreen>
+      <ScreenHeader headerText="Reports" onPress={() => navigation.goBack()} />
       <View style={styles.container}>
         <ScrollView>
-          <ScreenHeader
-            headerText="Reports"
-            onPress={() => navigation.goBack()}
-          />
           <View style={styles.innerContainer}>
             <ReportsComponent icon="file-eye" text="Viewed Listings" />
             <ReportsComponent icon="ticket-account" text="Previous Bookings" />

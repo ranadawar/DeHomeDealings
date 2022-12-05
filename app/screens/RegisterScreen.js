@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, Image, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Alert,
+  Modal,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import AppButton from "../components/AppButton";
 import { COLORS } from "../constants/theme";
@@ -9,6 +17,10 @@ import * as yup from "yup";
 import { auth, db } from "../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import moment from "moment";
+import MainScreen from "../components/MainScreen";
+
+import LottieView from "lottie-react-native";
 
 const signUpValidationSchema = yup.object().shape({
   email: yup.string().email().required().label("Email"),
@@ -22,7 +34,10 @@ const signUpValidationSchema = yup.object().shape({
 });
 
 const RegisterScreen = ({ navigation }) => {
+  const [loading, setLoading] = React.useState(false);
+
   const handleSignUp = (values) => {
+    setLoading(true);
     createUserWithEmailAndPassword(auth, values.email, values.password)
       .then((userCredential) => {
         const user = userCredential.user;
@@ -31,84 +46,107 @@ const RegisterScreen = ({ navigation }) => {
           email: values.email,
           phoneNumber: values.phoneNumber,
           uid: user.uid,
+          joined: moment().format("MMMM Do YYYY, h:mm:ss a"),
+          isAdmin: false,
+          isVerified: false,
         }).then(() => {
-          console.log("User added!");
+          Alert.alert("Account Created");
+          setLoading(false);
         });
       })
       .catch((error) => {
         Alert.alert("Error", error.message);
+        setLoading(false);
       });
   };
   return (
-    <View style={styles.mainContainer}>
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.logo}
-          source={require("../../assets/basic/landingLogo.png")}
-        />
-        <Text
-          style={{ fontSize: 25, fontWeight: "bold", color: COLORS.primary }}
-        >
-          Register
-        </Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <AppForm
-          initialValues={{ email: "", password: "" }}
-          validationSchema={signUpValidationSchema}
-          onSubmit={(values) => handleSignUp(values)}
-        >
-          <AppFormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Enter Email"
-            icon="email"
-            name="email"
-            iconColor={COLORS.secondary}
-            textContentType="emailAddress"
-            keyboardType="email-address"
-          />
-          <AppFormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Enter Username"
-            icon="human-greeting-variant"
-            name="username"
-            iconColor={COLORS.secondary}
-            keyboardType="email-address"
-          />
-          <AppFormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Enter phone number"
-            icon="card-account-phone-outline"
-            name="phoneNumber"
-            iconColor={COLORS.secondary}
-            keyboardType="number-pad"
-          />
+    <>
+      <MainScreen>
+        <ScrollView>
+          <View style={styles.imageContainer}>
+            <Image
+              style={styles.logo}
+              source={require("../../assets/basic/landingLogo.png")}
+            />
+            <Text
+              style={{
+                fontSize: 25,
+                fontWeight: "bold",
+                color: COLORS.primary,
+              }}
+            >
+              Register
+            </Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <AppForm
+              initialValues={{ email: "", password: "" }}
+              validationSchema={signUpValidationSchema}
+              onSubmit={(values) => handleSignUp(values)}
+            >
+              <AppFormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder="Enter Email"
+                icon="email"
+                name="email"
+                iconColor={COLORS.secondary}
+                textContentType="emailAddress"
+                keyboardType="email-address"
+              />
+              <AppFormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder="Enter Username"
+                icon="human-greeting-variant"
+                name="username"
+                iconColor={COLORS.secondary}
+                keyboardType="email-address"
+              />
+              <AppFormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder="Enter phone number"
+                icon="card-account-phone-outline"
+                name="phoneNumber"
+                iconColor={COLORS.secondary}
+                keyboardType="number-pad"
+              />
 
-          <AppFormField
-            autoCapitalize="none"
-            autoCorrect={false}
-            placeholder="Enter Password"
-            icon="lock"
-            iconColor={COLORS.secondary}
-            name="password"
-            textContentType="password"
-            keyboardType="email-address"
-            secureTextEntry
+              <AppFormField
+                autoCapitalize="none"
+                autoCorrect={false}
+                placeholder="Enter Password"
+                icon="lock"
+                iconColor={COLORS.secondary}
+                name="password"
+                textContentType="password"
+                keyboardType="email-address"
+                secureTextEntry
+              />
+              <SubmitButton title="Sign Up" color={COLORS.primary} />
+            </AppForm>
+            <AppButton
+              title="Login"
+              color={COLORS.white}
+              onPress={() => navigation.navigate("LoginPage")}
+              style={{ borderWidth: 1, borderColor: COLORS.primary }}
+              textColor={COLORS.primary}
+            />
+          </View>
+        </ScrollView>
+      </MainScreen>
+
+      <Modal visible={loading}>
+        <View style={{ flex: 1 }}>
+          <LottieView
+            source={require("../../assets/animations/register.json")}
+            autoPlay
+            loop
           />
-          <SubmitButton title="Sign Up" color={COLORS.primary} />
-        </AppForm>
-        <AppButton
-          title="Login"
-          color={COLORS.white}
-          onPress={() => navigation.navigate("LoginPage")}
-          style={{ borderWidth: 1, borderColor: COLORS.primary }}
-          textColor={COLORS.primary}
-        />
-      </View>
-    </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
@@ -116,7 +154,6 @@ export default RegisterScreen;
 
 const styles = StyleSheet.create({
   btnContainer: {
-    width: "90%",
     marginBottom: 59,
   },
   imageContainer: {
@@ -125,8 +162,6 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   image: {
     flex: 1,
@@ -136,9 +171,8 @@ const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   inputContainer: {
-    width: "95%",
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 1,
+    marginHorizontal: 20,
     marginVertical: 15,
     marginBottom: 25,
   },

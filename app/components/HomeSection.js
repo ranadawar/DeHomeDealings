@@ -4,10 +4,14 @@ import { COLORS, FONTS } from "../constants/theme";
 
 import AppButton from "./AppButton";
 import servicecolors from "../config/servicecolors";
-const HomeSection = ({ onPress }) => {
+import UserContext from "../context/userContext";
+const HomeSection = ({ onPress, name }) => {
+  React.useEffect(() => {
+    console.log("HomeSection");
+  }, [name]);
   return (
     <View style={styles.container}>
-      <Text style={styles.tag}>Hello Dawar👋</Text>
+      <Text style={styles.tag}>Hello 👋</Text>
       <Text style={styles.head}>Let's find a dream house</Text>
 
       <View>

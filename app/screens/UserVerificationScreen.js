@@ -10,6 +10,8 @@ import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { AppForm, AppFormField, SubmitButton } from "../components/form";
 
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+
 import * as yup from "yup";
 
 import { COLORS, FONTS } from "../constants/theme";
@@ -23,66 +25,143 @@ import MainScreen from "../components/MainScreen";
 import * as ImagePicker from "expo-image-picker";
 import { randomString } from "../global/functions";
 import colors from "../config/colors";
+import moment from "moment";
+import FormImagePicker from "../components/form/FormImagePicker";
+import { UserContext } from "../context/userContext";
+import UploadScreen from "./UploadScreen";
 
-const uvInitialValues = { cnic: "", phone: "", address: "", postelCode: "" };
+const uvInitialValues = {
+  cnic: "",
+  phone: "",
+  address: "",
+  postelCode: "",
+  images: [],
+};
 
 const uvValidationSchema = yup.object().shape({
-  cnic: yup.string().required().min(13).max(13).label("CNIC"),
-  phone: yup.string().required().min(11).max(11).label("Phone"),
-  address: yup.string().required().label("Address"),
-  postelCode: yup.string().required().min(5).max(5).label("Postel Code"),
+  cnic: yup
+    .string()
+    .required()
+    .min(13)
+    .max(13)
+    .label("CNIC"),
+  phone: yup
+    .string()
+    .required()
+    .min(11)
+    .max(11)
+    .label("Phone"),
+  address: yup
+    .string()
+    .required()
+    .label("Address"),
+  postelCode: yup
+    .string()
+    .required()
+    .min(5)
+    .max(5)
+    .label("Postel Code"),
+  images: yup.array().min(1, "Please select at least one image."),
 });
 
 const UserVerificationScreen = ({ navigation }) => {
-  const [image, setImage] = React.useState(null);
   const [uploading, setUploading] = React.useState(false);
+  const [progress, setProgress] = React.useState(0);
+  const [modalVisible, setModalVisible] = React.useState(false);
+  const [urls, setUrls] = React.useState([]);
+  const { user, setUser } = React.useContext(UserContext);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    const source = { uri: result.uri };
-    console.log(source);
-    setImage(source);
-  };
-
-  //upload image on firebase version 9
-  const uploadImage = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    //set the filename
-    const filename = randomString(10);
-    //set the reference
-    const ref = storage.ref().child(`images/${filename}`);
-    return ref.put(blob);
-  };
+  React.useEffect(() => {
+    console.log("User Verification Screen", user);
+  }, []);
 
   const handleSubmit = async (values) => {
-    const user = auth.currentUser;
+    setProgress(0);
+    setModalVisible(true);
 
-    const docId = randomString(25);
+    const images = values.images;
+    const myValues = values;
+    uploadImagesToFirebase(images, myValues);
+  };
+
+  const uploadImagesToFirebase = async (images, values) => {
+    const urls = [];
+    for (let i = 0; i < images.length; i++) {
+      const image = images[i];
+      const fileName = Date.now() + randomString(5);
+      const storageRef = ref(storage, `verifications/${fileName}.jpeg`);
+      //create blob
+      const blob = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function(e) {
+          console.log(e);
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", image, true);
+        xhr.send(null);
+      });
+      //upload blob
+      const uploadTask = uploadBytesResumable(storageRef, blob);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+          Alert.alert("Error", "An error occurred while uploading.");
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            urls.push(downloadURL);
+            if (urls.length === images.length) {
+              //all images uploaded
+              setUrls(urls);
+              setProgress(0);
+              setModalVisible(false);
+              //save data to firebase
+              helloFunction(urls, values);
+            }
+          });
+        }
+      );
+    }
+  };
+
+  const helloFunction = async (urls, values) => {
+    setModalVisible(true);
+    const docId = randomString(35);
     try {
       setDoc(doc(db, "vrequests", docId), {
         cnic: values.cnic,
         phone: values.phone,
         address: values.address,
         postelCode: values.postelCode,
-        uid: user.uid,
-        imgUri: image.uri,
-      });
-      uploadImage(image.uri);
-      Alert.alert("Success", "User verification request sent");
+        docId: docId,
+        user: user,
+        images: urls,
+        status: "pending",
+        submittedAt: moment().format("MMMM Do YYYY, h:mm:ss a"),
+      })
+        .then(() => {
+          setModalVisible(false);
+          Alert.alert("User Verification request Sent");
+          navigation.goBack();
+        })
+        .catch((error) => {
+          setModalVisible(false);
+          Alert.alert("Error", error.message);
+        });
     } catch (error) {
       Alert.alert("Error", error.message);
+      setModalVisible(false);
     }
-  };
-
-  const cancelImage = () => {
-    setImage(null);
   };
 
   return (
@@ -111,7 +190,7 @@ const UserVerificationScreen = ({ navigation }) => {
               color={COLORS.white}
             />
           </TouchableOpacity>
-          <LargeText>UserVerification</LargeText>
+          <LargeText>User Verification</LargeText>
         </View>
         <View style={styles.innerContainer}>
           <Image
@@ -120,44 +199,20 @@ const UserVerificationScreen = ({ navigation }) => {
             style={styles.image}
           />
           <LargeText style={{ marginVertical: 15, color: COLORS.primary }}>
-            UserVerification
+            User Verification
           </LargeText>
-
-          {!image && (
-            <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
-              <MaterialCommunityIcons
-                name="camera"
-                color={COLORS.primary}
-                size={45}
-              />
-              <Text style={styles.cnicText}>CNIC Image</Text>
-            </TouchableOpacity>
-          )}
-          {image && (
-            <View style={styles.selectionView}>
-              <Image
-                source={{ uri: image.uri }}
-                resizeMode="contain"
-                style={styles.imageSelected}
-              />
-              <TouchableOpacity
-                onPress={cancelImage}
-                style={styles.crossContainer}
-              >
-                <MaterialCommunityIcons
-                  name="minus-circle"
-                  color={COLORS.white}
-                  size={25}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
+          <UploadScreen
+            onDone={() => setModalVisible(false)}
+            progress={progress}
+            visible={modalVisible}
+          />
 
           <AppForm
             initialValues={uvInitialValues}
             onSubmit={(values) => handleSubmit(values)}
             validationSchema={uvValidationSchema}
           >
+            <FormImagePicker name="images" />
             <AppFormField
               autoCapitalize="none"
               autoCorrect={false}
@@ -215,6 +270,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
+    paddingBottom: 100,
   },
   innerContainer: {
     flex: 1,
@@ -242,3 +298,23 @@ const styles = StyleSheet.create({
     height: 250,
   },
 });
+
+// const user = auth.currentUser;
+
+//     const docId = randomString(25);
+//     try {
+//       setDoc(doc(db, "vrequests", docId), {
+//         cnic: values.cnic,
+//         phone: values.phone,
+//         address: values.address,
+//         postelCode: values.postelCode,
+//         docId: docId,
+//         uid: user.uid,
+//         images: values.images,
+//         submittedAt: moment().format("MMMM Do YYYY, h:mm:ss a"),
+//       });
+
+//       Alert.alert("Success", "User verification request sent");
+//     } catch (error) {
+//       Alert.alert("Error", error.message);
+//     }

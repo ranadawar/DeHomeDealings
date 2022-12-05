@@ -54,7 +54,7 @@ function AppPicker({
         </View>
       </TouchableWithoutFeedback>
       <Modal visible={modalVisible} animationType="slide">
-        <View>
+        <View style={{ marginHorizontal: 20 }}>
           <AppButton title="Close" onPress={() => setModalVisible(false)} />
           <FlatList
             data={items}
@@ -67,6 +67,7 @@ function AppPicker({
                 onPress={() => {
                   setModalVisible(false);
                   onSelectItem(item);
+                  console.log(item);
                 }}
               />
             )}

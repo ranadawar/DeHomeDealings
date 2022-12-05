@@ -53,16 +53,6 @@ const TabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Chats"
-        component={ChatScreen}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <FontAwesome name="envelope" size={size} color={color} />
-          ),
-        }}
-      />
-
-      <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
