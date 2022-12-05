@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
               </View>
               <View style={styles.btnsContainer}>
                 <LinkButton
-                  title="Map View"
+                  title="Bank Details"
                   onPress={() => navigation.navigate("foryou")}
                 />
                 <LinkButton

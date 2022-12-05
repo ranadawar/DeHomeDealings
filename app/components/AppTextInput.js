@@ -6,7 +6,7 @@ import colors from "../config/colors";
 import { COLORS } from "../constants/theme";
 
 const AppTextInput = ({
-  icon = "home",
+  icon,
   placeholder = "email",
   iconColor = COLORS.primary,
   color = colors.white,

@@ -11,6 +11,7 @@ import { useFonts } from "expo-font";
 import { UserProvider } from "./app/context/userContext";
 import { ListingsProvider } from "./app/context/listingContext";
 import { AgreementsProvider } from "./app/context/agreementContext";
+import { BanksProvider } from "./app/context/banksContext";
 
 const theme = {
   ...DefaultTheme,
@@ -46,13 +47,15 @@ const App = () => {
   if (!fontsLoaded) return null;
   return (
     <AgreementsProvider>
-      <ListingsProvider>
-        <UserProvider>
-          <NavigationContainer theme={theme}>
-            {user ? <TabNavigator /> : <AuthNavigator />}
-          </NavigationContainer>
-        </UserProvider>
-      </ListingsProvider>
+      <BanksProvider>
+        <ListingsProvider>
+          <UserProvider>
+            <NavigationContainer theme={theme}>
+              {user ? <TabNavigator /> : <AuthNavigator />}
+            </NavigationContainer>
+          </UserProvider>
+        </ListingsProvider>
+      </BanksProvider>
     </AgreementsProvider>
   );
 };

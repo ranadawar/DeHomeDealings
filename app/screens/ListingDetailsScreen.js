@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import React from "react";
-import { COLORS } from "../constants/theme";
+import { COLORS, FONTS } from "../constants/theme";
 import { Linking } from "react-native";
 
 import servicecolors from "../config/servicecolors";
@@ -24,6 +24,7 @@ import PersonDetailsContainer from "../components/PersonDetailsContainer";
 import CallToAction from "../components/CallToAction";
 
 import QRCode from "react-native-qrcode-svg";
+import WithHeading from "../components/WithHeading";
 function ListingDetailsScreen({ route, navigation }) {
   const data = route.params;
   React.useEffect(() => {
@@ -114,6 +115,19 @@ function ListingDetailsScreen({ route, navigation }) {
           }}
         >
           <QRCode value={data.listingId} />
+        </View>
+        <View>
+          {data.postedBy.isVerified ? (
+            <View style={styles.verifiedBox}>
+              <Text style={styles.verifiedText}>Posted by a Verified User</Text>
+            </View>
+          ) : (
+            <View style={styles.verifiedBox}>
+              <Text style={styles.verifiedText}>
+                Posted by a Non Verified User
+              </Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.ownerDetailsContainer}>
@@ -219,5 +233,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 20,
+  },
+  verifiedBox: {
+    backgroundColor: COLORS.secondary,
+    marginHorizontal: 20,
+    borderRadius: 10,
+  },
+  verifiedText: {
+    color: COLORS.white,
+    textAlign: "center",
+    paddingVertical: 10,
+    fontFamily: FONTS.semiBold,
   },
 });

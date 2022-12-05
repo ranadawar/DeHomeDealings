@@ -18,16 +18,32 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      },
+      "bundleIdentifier": "com.ranadawar.DriveAnywhere",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#FFFFFF",
+        "package": "com.ranadawar.dehomedealing",
+        "googleServicesFile": "./google-services.json",
+        "versionCode": 1
+      },
+      "package": "com.ranadawar.dehomedealing"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "730b8dc2-5856-4f8d-b1cc-4b6d1762178e"
+      }
     }
   }
 }

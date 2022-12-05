@@ -40,7 +40,7 @@ const OwnerOfferDetailScreen = ({ route }) => {
           <AppButton title="Chat" onPress={moveToChat} color={COLORS.primary} />
           <AppButton
             title="Send Agreement"
-            onPress={moveToChat}
+            onPress={() => navigation.navigate("sendagreement", data)}
             color={COLORS.secondary}
           />
         </View>

@@ -71,8 +71,9 @@ const AgreementScreen = ({ navigation }) => {
 
     try {
       setDoc(doc(db, "agreements", docId), {
-        title: values.title,
+        label: values.title,
         uid: auth.currentUser.uid,
+        value: docId,
         propertyAddress: values.propertyAddress,
         termsAndConditions: values.termsAndConditions,
         generatedAt: currentTime,

@@ -1,55 +1,72 @@
-import * as React from "react";
-import MapView from "react-native-maps";
-import { StyleSheet, Text, View, Dimensions } from "react-native";
-import AppHeader from "../components/AppHeader";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import React from "react";
 import MainScreen from "../components/MainScreen";
+import AppHeader from "../components/AppHeader";
+import { FONTS } from "../constants/theme";
+import { auth } from "../../firebase";
+import AppButton from "../components/AppButton";
+import BankCard from "../components/BankCard";
 import { useNavigation } from "@react-navigation/native";
-import { ListingsContext } from "../context/listingContext";
+import { BanksContext } from "../context/banksContext";
+
 const RecommendedScreen = () => {
   const navigation = useNavigation();
-  const { listings, setListings } = React.useContext(ListingsContext);
-  const [region, setRegion] = React.useState({
-    //islamabad
-    latitude: 33.6844,
-    longitude: 73.0479,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const { banks, setBanks, loadBanks, setLoadBanks } = React.useContext(
+    BanksContext
+  );
 
-  //displaying the markers on the map after getting location from array of objects listings
+  //get all the banks from banks where uid is equal to the current user's uid
+  const myBanks = banks.filter((bank) => bank.uid === auth.currentUser.uid);
 
   return (
-    <MainScreen>
-      <AppHeader titleScreen="Map View" onPress={() => navigation.goBack()} />
-      <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          region={region}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          showsCompass={true}
-          showsScale={true}
-          showsTraffic={true}
-          showsBuildings={true}
-          showsIndoors={true}
-          showsIndoorLevelPicker={true}
-          onRegionChangeComplete={(region) => setRegion(region)}
+    <>
+      <MainScreen>
+        <AppHeader
+          titleScreen="Bank Details"
+          onPress={() => navigation.goBack()}
         />
-      </View>
-    </MainScreen>
+        {myBanks.length > 0 ? (
+          <View style={styles.listContainer}>
+            <Text style={styles.title}>Your Banks</Text>
+            <FlatList
+              data={myBanks}
+              keyExtractor={(item) => item.docID.toString()}
+              renderItem={({ item }) => (
+                <BankCard
+                  bankName={item.bankname}
+                  accountNumber={item.accountnumber}
+                  accountName={item.accountname}
+                />
+              )}
+            />
+          </View>
+        ) : (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text style={styles.title}>No Banks Added</Text>
+            <AppButton
+              title="Add Bank"
+              onPress={() => navigation.navigate("addbank")}
+            />
+          </View>
+        )}
+      </MainScreen>
+    </>
   );
 };
 
+export default RecommendedScreen;
+
 const styles = StyleSheet.create({
-  container: {
+  listContainer: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    marginHorizontal: 20,
   },
-  map: {
-    width: Dimensions.get("window").width,
-    height: "100%",
+  title: {
+    fontSize: 20,
+    fontFamily: FONTS.bold,
+    textAlign: "center",
+    marginVertical: 20,
   },
 });
-export default RecommendedScreen;

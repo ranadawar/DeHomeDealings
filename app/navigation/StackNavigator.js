@@ -38,6 +38,8 @@ import MySentOffers from "../screens/MySentOffers";
 import SeeMyOffersDetail from "../screens/SeeMyOffersDetail";
 import { CommentsScreen } from "../screens/CommentsScreen";
 import ViewTheAgreement from "../screens/ViewTheAgreement";
+import SendAgreements from "../screens/SendAgreements";
+import AddBank from "../screens/AddBank";
 
 const Stack = createNativeStackNavigator();
 
@@ -88,6 +90,8 @@ const StackNavigator = () => {
       <Stack.Screen name="seemyofferdetail" component={SeeMyOffersDetail} />
       <Stack.Screen name="commentscreen" component={CommentsScreen} />
       <Stack.Screen name="viewtheagreement" component={ViewTheAgreement} />
+      <Stack.Screen name="sendagreement" component={SendAgreements} />
+      <Stack.Screen name="addbank" component={AddBank} />
     </Stack.Navigator>
   );
 };

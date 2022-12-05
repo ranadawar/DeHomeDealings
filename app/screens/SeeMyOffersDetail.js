@@ -48,6 +48,14 @@ const SeeMyOffersDetail = ({ route }) => {
             color={COLORS.secondary}
           />
         </View>
+
+        <View>
+          <Text style={styles.agreeTerms}>Agree With Terms&Conditions</Text>
+
+          <View style={styles.bottomBtnContainer}>
+            <AppButton title="Place order" />
+          </View>
+        </View>
       </View>
     </MainScreen>
   );
@@ -56,6 +64,13 @@ const SeeMyOffersDetail = ({ route }) => {
 export default SeeMyOffersDetail;
 
 const styles = StyleSheet.create({
+  agreeTerms: {
+    fontSize: 16,
+    fontFamily: FONTS.semiBold,
+    marginVertical: 5,
+    textAlign: "center",
+  },
+  bottomBtnContainer: {},
   mainContainer: {
     marginHorizontal: 20,
   },
