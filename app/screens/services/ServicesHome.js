@@ -5,29 +5,10 @@ import ExtraLargeText from "../../components/texts/ExtraLargeText";
 import SearchBoxServices from "../../components/SearchBoxServices";
 import servicecolors from "../../config/servicecolors";
 import ServiceItem from "../../components/ServiceItem";
-import HomeServiceCard from "../../components/HomeServiceCard";
-import { useNavigation } from "@react-navigation/native";
+
 import ServiceCard from "../../components/ServiceCard";
 import { db } from "../../../firebase";
 import { collection, getDocs } from "firebase/firestore";
-
-const list = [
-  {
-    id: 1,
-    title: "Home Cleaning",
-    imageSource: require("../../../assets/images/many/service.jpg"),
-  },
-  {
-    id: 2,
-    title: "AC Repair",
-    imageSource: require("../../../assets/images/many/service.jpg"),
-  },
-  {
-    id: 3,
-    title: "Beauty",
-    imageSource: require("../../../assets/images/many/service.jpg"),
-  },
-];
 
 const ServicesHome = ({ navigation }) => {
   const [listings, setListings] = React.useState([]);

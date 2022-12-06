@@ -50,6 +50,8 @@ import DisplayImage from "../screens/DisplayImage";
 import CompleteOrderScreen from "../screens/CompleteOrderScreen";
 import GiveFeedback from "../screens/GiveFeedback";
 import ViewFeedbacks from "../screens/ViewFeedbacks";
+import ShowPayments from "../screens/ShowPayments";
+import DisplayFavoriteListings from "../screens/DisplayFavoriteListings";
 
 const Stack = createNativeStackNavigator();
 
@@ -115,6 +117,8 @@ const StackNavigator = () => {
       <Stack.Screen name="completedscreen" component={CompleteOrderScreen} />
       <Stack.Screen name="givefeedback" component={GiveFeedback} />
       <Stack.Screen name="viewfeedbacks" component={ViewFeedbacks} />
+      <Stack.Screen name="showpayments" component={ShowPayments} />
+      <Stack.Screen name="showfav" component={DisplayFavoriteListings} />
     </Stack.Navigator>
   );
 };

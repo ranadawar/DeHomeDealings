@@ -1,4 +1,4 @@
-import { Image, Modal, StyleSheet, Text, View } from "react-native";
+import { Image, Modal, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import MainScreen from "../../components/MainScreen";
 import AppHeader from "../../components/AppHeader";
@@ -16,9 +16,9 @@ import LottieView from "lottie-react-native";
 const validationSchema = yup.object().shape({
   images: yup
     .array()
-    .max(1, "Please select maximum one image.")
-    .min(1, "Please select one image."),
-  username: yup
+    .required()
+    .max(1, "Please select maximum one image."),
+  userName: yup
     .string()
     .required()
     .min(4)
@@ -32,7 +32,7 @@ const validationSchema = yup.object().shape({
 
 const initialValues = {
   images: [],
-  username: "",
+  userName: "",
   phoneNumber: "",
 };
 
@@ -43,6 +43,7 @@ const UpdateProfile = () => {
   const [urls, setUrls] = React.useState([]);
 
   const handleUpdate = async (myValues) => {
+    console.log("ennnter");
     setLoading(true);
     const images = myValues.images;
     const values = myValues;
@@ -86,7 +87,6 @@ const UpdateProfile = () => {
             if (urls.length === images.length) {
               //all images uploaded
               setUrls(urls);
-              setLoading(false);
               //save data to firebase
               postData(urls, values);
             }
@@ -101,7 +101,7 @@ const UpdateProfile = () => {
     try {
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
         profilePicture: images[0],
-        username: values.username,
+        username: values.userName,
         phoneNumber: values.phoneNumber,
       });
       setLoading(false);
@@ -114,36 +114,38 @@ const UpdateProfile = () => {
   return (
     <>
       <MainScreen>
+        <AppHeader
+          titleScreen="Update Profile"
+          onPress={() => navigation.goBack()}
+        />
         <View style={styles.container}>
-          <AppHeader
-            titleScreen="Update Profile"
-            onPress={() => navigation.goBack()}
-          />
-          <View style={styles.topContainer}>
-            <Image
-              resizeMode="contain"
-              source={require("../../../assets/icons/update.png")}
-              style={styles.image}
-            />
-            <Text style={styles.title}>Update Profile</Text>
-          </View>
-
-          <View style={styles.formContainer}>
-            <AppForm
-              initialValues={initialValues}
-              onSubmit={(values) => handleUpdate(values)}
-              validationSchema={validationSchema}
-            >
-              <FormImagePicker name="images" />
-              <AppFormField name="name" placeholder="Updated Name" />
-              <AppFormField
-                name="phoneNumber"
-                placeholder="Updated Phone Number"
+          <ScrollView>
+            <View style={styles.topContainer}>
+              <Image
+                resizeMode="contain"
+                source={require("../../../assets/icons/update.png")}
+                style={styles.image}
               />
+              <Text style={styles.title}>Update Profile</Text>
+            </View>
 
-              <SubmitButton title="Update Profile" />
-            </AppForm>
-          </View>
+            <View style={styles.formContainer}>
+              <AppForm
+                initialValues={initialValues}
+                onSubmit={(values) => handleUpdate(values)}
+                validationSchema={validationSchema}
+              >
+                <FormImagePicker name="images" />
+                <AppFormField name="userName" placeholder="Updated Name" />
+                <AppFormField
+                  name="phoneNumber"
+                  placeholder="Updated Phone Number"
+                />
+
+                <SubmitButton title="Update Profile" />
+              </AppForm>
+            </View>
+          </ScrollView>
         </View>
       </MainScreen>
 
@@ -174,8 +176,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   image: {
-    width: 135,
-    height: 135,
+    width: 100,
+    height: 100,
   },
   topContainer: {
     marginVertical: 25,

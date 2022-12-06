@@ -12,10 +12,8 @@ import { UserContext } from "../context/userContext";
 import servicecolors from "../config/servicecolors";
 const ProfileScreen = ({ navigation }) => {
   const { user, userDataLoading } = React.useContext(UserContext);
+  const [name, setName] = React.useState("");
 
-  React.useEffect(() => {
-    console.log(user);
-  }, [user]);
   return (
     <>
       <MainScreen>
@@ -69,8 +67,18 @@ const ProfileScreen = ({ navigation }) => {
               icon="information"
               onPress={() => navigation.navigate("Reports")}
             />
-            <LinkComponents title="Favorites" iconStyle="blue" icon="heart" />
-            <LinkComponents title="Payments" iconStyle="green" icon="cash" />
+            <LinkComponents
+              title="Favorites"
+              iconStyle="blue"
+              icon="heart"
+              onPress={() => navigation.navigate("showfav")}
+            />
+            <LinkComponents
+              title="Payments"
+              iconStyle="green"
+              icon="cash"
+              onPress={() => navigation.navigate("showpayments")}
+            />
             <LinkComponents
               title="Sell Service"
               iconStyle="brown"
