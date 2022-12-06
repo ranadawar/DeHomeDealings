@@ -40,6 +40,16 @@ import { CommentsScreen } from "../screens/CommentsScreen";
 import ViewTheAgreement from "../screens/ViewTheAgreement";
 import SendAgreements from "../screens/SendAgreements";
 import AddBank from "../screens/AddBank";
+import MyOrders from "../screens/MyOrders";
+import OwnerOrders from "../screens/OwnerOrders";
+import ViewOrderDetails from "../screens/ViewOrderDetails";
+import { OrderCommentScreen } from "../screens/OrderCommentScreen";
+import PayOrder from "../screens/PayOrder";
+import ViewOwnerOrderDetails from "../screens/ViewOwnerOrderDetails";
+import DisplayImage from "../screens/DisplayImage";
+import CompleteOrderScreen from "../screens/CompleteOrderScreen";
+import GiveFeedback from "../screens/GiveFeedback";
+import ViewFeedbacks from "../screens/ViewFeedbacks";
 
 const Stack = createNativeStackNavigator();
 
@@ -92,6 +102,19 @@ const StackNavigator = () => {
       <Stack.Screen name="viewtheagreement" component={ViewTheAgreement} />
       <Stack.Screen name="sendagreement" component={SendAgreements} />
       <Stack.Screen name="addbank" component={AddBank} />
+      <Stack.Screen name="myorders" component={MyOrders} />
+      <Stack.Screen name="ownerorders" component={OwnerOrders} />
+      <Stack.Screen name="vieworderdetails" component={ViewOrderDetails} />
+      <Stack.Screen
+        name="viewownerorderdetails"
+        component={ViewOwnerOrderDetails}
+      />
+      <Stack.Screen name="ordercommentscreen" component={OrderCommentScreen} />
+      <Stack.Screen name="payorder" component={PayOrder} />
+      <Stack.Screen name="displayscreenshot" component={DisplayImage} />
+      <Stack.Screen name="completedscreen" component={CompleteOrderScreen} />
+      <Stack.Screen name="givefeedback" component={GiveFeedback} />
+      <Stack.Screen name="viewfeedbacks" component={ViewFeedbacks} />
     </Stack.Navigator>
   );
 };

@@ -9,11 +9,12 @@ import AppFormDatePicker from "../components/form/AppFormDatePicker";
 
 import * as yup from "yup";
 import moment from "moment";
-import { randomString } from "../global/functions";
+import { getUserAndSendNotification, randomString } from "../global/functions";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { UserContext } from "../context/userContext";
 import LottieView from "lottie-react-native";
 import { auth, db } from "../../firebase";
+import { AllUsersContext } from "../context/allUsersContext";
 
 const validationSchema = yup.object().shape({
   title: yup
@@ -53,6 +54,7 @@ const BookingHouse = ({ route }) => {
   const [rent, setRent] = React.useState(false);
   const { user, setUser, userDataLoading } = React.useContext(UserContext);
   const [loading, setLoading] = React.useState(false);
+  const { users, setUsers } = React.useContext(AllUsersContext);
 
   React.useEffect(() => {
     console.log("UUUUUUUUUUUUU", user);
@@ -107,6 +109,14 @@ const BookingHouse = ({ route }) => {
         Alert.alert("Booking Sent");
         setLoading(false);
         //create a doc with id as the messageId in comments collection
+        const bodyRequest = "You have a new booking request for your listing";
+        const route = "viewmyhomeoffers";
+        getUserAndSendNotification(
+          data.postedBy.uid,
+          users,
+          bodyRequest,
+          route
+        );
         setDoc(doc(db, "comments", messageId), {
           messages: [
             {
@@ -158,6 +168,14 @@ const BookingHouse = ({ route }) => {
       .then(() => {
         Alert.alert("Booking Request Sent");
         setLoading(false);
+        const bodyRequest = "You have a new booking request for your listing";
+        const route = "viewmyhomeoffers";
+        getUserAndSendNotification(
+          data.postedBy.uid,
+          users,
+          bodyRequest,
+          route
+        );
         //create a doc with id as the messageId in comments collection
         setDoc(doc(db, "comments", messageId), {
           messages: [

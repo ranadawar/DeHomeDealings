@@ -15,11 +15,18 @@ const MyOffers = ({ route }) => {
   const navigation = useNavigation();
   const [loading, setLoading] = React.useState(false);
   const [bookings, setBookings] = React.useState([]);
+  const [updatedBookings, setUpdatedBookings] = React.useState(bookings);
   const data = route.params;
   useEffect(() => {
     console.log("Uuuuuuuuuuuuuuuuuuuuuuuuuuuu", data);
     getBookings();
+    filterData();
   }, []);
+
+  const filterData = () => {
+    const filteredData = bookings.filter((item) => item.isAccepted === false);
+    setUpdatedBookings(filteredData);
+  };
 
   const getBookings = async () => {
     setLoading(true);
@@ -35,6 +42,7 @@ const MyOffers = ({ route }) => {
         myData.push({ ...doc.data() });
       });
       setBookings(myData);
+      filterData();
       console.log("dddddddddddddddddddddddddd", myData);
       setLoading(false);
     } catch (error) {
@@ -51,7 +59,10 @@ const MyOffers = ({ route }) => {
   return (
     <>
       <MainScreen>
-        <AppHeader onPress={() => navigation.goBack()} titleScreen="MyOffers" />
+        <AppHeader
+          onPress={() => navigation.goBack()}
+          titleScreen="Listings Offers"
+        />
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>Booking Requests</Text>
           <View style={styles.listContainer}>

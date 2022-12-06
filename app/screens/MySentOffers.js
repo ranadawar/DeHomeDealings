@@ -22,10 +22,16 @@ const MySentOffers = () => {
   const navigation = useNavigation();
   const [myOffers, setMyOffers] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [updatedData, setUpdatedData] = React.useState(myOffers);
 
   React.useEffect(() => {
     getMyOffers();
   }, []);
+
+  const filterData = () => {
+    const filteredData = myOffers.filter((item) => item.status === "pending");
+    setUpdatedData(filteredData);
+  };
 
   const getMyOffers = async () => {
     try {
@@ -42,6 +48,7 @@ const MySentOffers = () => {
         myData.push({ ...doc.data() });
       });
       setMyOffers(myData);
+      filterData();
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -56,12 +63,12 @@ const MySentOffers = () => {
           titleScreen="My Sent Offers"
           onPress={() => navigation.goBack()}
         />
-        {myOffers.length > 0 ? (
+        {updatedData.length > 0 ? (
           <View style={styles.mainContainer}>
             <Text style={styles.title}>My Sent Offers</Text>
             <View>
               <FlatList
-                data={myOffers}
+                data={updatedData}
                 keyExtractor={(item) => item.sentAt.toString()}
                 renderItem={({ item }) => (
                   <BookingCard
@@ -130,6 +137,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     marginHorizontal: 20,
+    paddingBottom: 120,
   },
   title: {
     fontFamily: FONTS.bold,

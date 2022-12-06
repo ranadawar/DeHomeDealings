@@ -1,15 +1,16 @@
-import {StyleSheet, Text, Image, View, TouchableOpacity} from 'react-native';
-import React from 'react';
-import {LargeText, MediumText, RegularText} from './texts';
-import {COLORS} from '../constants/theme';
+import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
+import React from "react";
+import { LargeText, MediumText, RegularText } from "./texts";
+import { COLORS } from "../constants/theme";
 
 const PersonDetailsContainer = ({
-  ownerName = 'Dawar',
-  ownerListings = '5 listings',
-  imgUrl = 'https://cdn-icons-png.flaticon.com/512/2919/2919906.png',
+  ownerName = "Dawar",
+  ownerListings,
+  imgUrl = "https://cdn-icons-png.flaticon.com/512/2919/2919906.png",
+  onPress,
 }) => {
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.container}>
         <Image
           source={{
@@ -18,7 +19,7 @@ const PersonDetailsContainer = ({
           style={styles.image}
         />
         <View>
-          <LargeText style={{color: COLORS.primary}}>{ownerName}</LargeText>
+          <LargeText style={{ color: COLORS.primary }}>{ownerName}</LargeText>
           <MediumText>{ownerListings}</MediumText>
         </View>
       </View>
@@ -30,11 +31,11 @@ export default PersonDetailsContainer;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 15,
     backgroundColor: COLORS.white,
-    width: '100%',
+    width: "100%",
     marginVertical: 10,
     marginHorizontal: 15,
     borderRadius: 15,

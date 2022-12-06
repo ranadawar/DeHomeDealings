@@ -23,6 +23,7 @@ import { db } from "../../firebase";
 import MainScreen from "../components/MainScreen";
 import AppTextInput from "../components/AppTextInput";
 import { ListingsContext } from "../context/listingContext";
+import { storeInFavorites } from "../global/functions";
 
 const ListingsScreen = ({ navigation }) => {
   const [loading, setLoading] = React.useState(false);
@@ -112,7 +113,7 @@ const ListingsScreen = ({ navigation }) => {
                         onPress={() => {
                           navigation.navigate("Details", item);
                         }}
-                        onPressHeart={() => Alert.alert("Added to favorite")}
+                        onPressHeart={() => storeInFavorites(item)}
                       />
                     </View>
                   );
@@ -161,7 +162,7 @@ const ListingsScreen = ({ navigation }) => {
           <LottieView
             loop
             autoPlay
-            source={require("../animations/loadlistings.json")}
+            source={require("../../assets/animations/loading.json")}
           />
         </View>
       </Modal>

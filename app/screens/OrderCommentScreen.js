@@ -14,16 +14,16 @@ import MainScreen from "../components/MainScreen";
 import { COLORS } from "../constants/theme";
 import { AllUsersContext } from "../context/allUsersContext";
 import { getUserAndSendNotification } from "../global/functions";
-
-export function CommentsScreen({ route }) {
+import LottieView from "lottie-react-native";
+export function OrderCommentScreen({ route }) {
   const data = route.params;
   const scrollView = React.useRef();
   const [messages, setMessages] = useState([]);
   const navigation = useNavigation();
   const { user, setUser } = React.useContext(UserContext);
   const [newMessage, setNewMessage] = useState("");
-  const comment = data.messageId;
-  const { users, setUsers } = React.useContext(AllUsersContext);
+  const comment = data.messagesId;
+  const { users, setUsers, usersLoading } = React.useContext(AllUsersContext);
 
   //onSnapshot function to get doc and listen for changes from collection comments where id is comment
   //detect changes and update the state using onSnapshot
@@ -47,6 +47,7 @@ export function CommentsScreen({ route }) {
 
   useEffect(() => {
     getComments();
+    console.log("thiiiiiiiiiiiiiiiiiiisssssssssssssssssssssssss", users);
   }, [getComments]);
 
   //sendMessage function to add new comment to the collection comments
@@ -66,7 +67,8 @@ export function CommentsScreen({ route }) {
       .then((docRef) => {
         const bodyRequest = "Message Update";
         const route = "myorders";
-        getUserAndSendNotification(adminId, users, bodyRequest, route);
+        getUserAndSendNotification(data.owner.uid, users, bodyRequest, route);
+        getUserAndSendNotification(data.user.uid, users, bodyRequest, route);
         getComments();
         //update the frontend state of the messages array
       })
@@ -127,6 +129,16 @@ export function CommentsScreen({ route }) {
           </TouchableOpacity>
         </View>
       </MainScreen>
+
+      <Modal visible={usersLoading}>
+        <View style={{ flex: 1 }}>
+          <LottieView
+            source={require("../../assets/animations/message.json")}
+            autoPlay
+            loop
+          />
+        </View>
+      </Modal>
     </>
   );
 }

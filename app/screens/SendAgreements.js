@@ -21,6 +21,8 @@ import { useNavigation } from "@react-navigation/native";
 import AppButton from "../components/AppButton";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
+import { getUserAndSendNotification } from "../global/functions";
+import { AllUsersContext } from "../context/allUsersContext";
 
 const validationSchema = yup.object().shape({
   agreement: yup
@@ -33,14 +35,16 @@ const validationSchema = yup.object().shape({
 const SendAgreements = ({ route }) => {
   const navigation = useNavigation();
   const myData = route.params;
+  const { users, setUsers } = React.useContext(AllUsersContext);
+
+  React.useEffect(() => {
+    console.log("Owner added the agreement", myData);
+  }, []);
 
   const docId = myData.bookingId;
-  const {
-    agreements,
-    setAgreements,
-    loadAgreements,
-    setLoadAgreements,
-  } = React.useContext(AgreementsContext);
+  const { agreements, loadAgreements, setLoadAgreements } = React.useContext(
+    AgreementsContext
+  );
 
   const addAgreement = async (item) => {
     const updatedData = item;
@@ -52,6 +56,9 @@ const SendAgreements = ({ route }) => {
       agreement: updatedData,
     });
     setLoadAgreements(false);
+    const bodyRequest = "Owner Added the agreement";
+    const route = "myoffers";
+    getUserAndSendNotification(myData.userData.uid, users, bodyRequest, route);
     Alert.alert("Agreement Sent", "Agreement has been sent to the client");
     navigation.goBack();
   };

@@ -54,7 +54,7 @@ const ViewMyHomeOffers = ({ route }) => {
     <>
       <MainScreen>
         <AppHeader
-          titleScreen="My Offers"
+          titleScreen="My Listings Offers"
           onPress={() => navigation.goBack()}
         />
         <View style={styles.topBtn}>

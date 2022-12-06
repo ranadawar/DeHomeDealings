@@ -10,10 +10,15 @@ import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import SearchHouse from "../screens/SearchHouse";
 import { COLORS } from "../constants/theme";
 import StackNavigator from "./StackNavigator";
+import useNotifications from "../hooks/useNotifications";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
+  useNotifications((notification) => {
+    console.log("notification", notification);
+    Alert.alert("Notification", "You have a new notification");
+  });
   return (
     <Tab.Navigator
       screenOptions={{

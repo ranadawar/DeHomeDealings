@@ -26,19 +26,27 @@ const RecommendedScreen = () => {
           onPress={() => navigation.goBack()}
         />
         {myBanks.length > 0 ? (
-          <View style={styles.listContainer}>
-            <Text style={styles.title}>Your Banks</Text>
-            <FlatList
-              data={myBanks}
-              keyExtractor={(item) => item.docID.toString()}
-              renderItem={({ item }) => (
-                <BankCard
-                  bankName={item.bankname}
-                  accountNumber={item.accountnumber}
-                  accountName={item.accountname}
-                />
-              )}
-            />
+          <View style={{ flex: 1 }}>
+            <View style={styles.listContainer}>
+              <Text style={styles.title}>Your Banks</Text>
+              <FlatList
+                data={myBanks}
+                keyExtractor={(item) => item.docID.toString()}
+                renderItem={({ item }) => (
+                  <BankCard
+                    bankName={item.bankname}
+                    accountNumber={item.accountnumber}
+                    accountName={item.accountname}
+                  />
+                )}
+              />
+            </View>
+            <View style={styles.btnContainer}>
+              <AppButton
+                title="Add Bank"
+                onPress={() => navigation.navigate("addbank")}
+              />
+            </View>
           </View>
         ) : (
           <View
@@ -59,6 +67,10 @@ const RecommendedScreen = () => {
 export default RecommendedScreen;
 
 const styles = StyleSheet.create({
+  btnContainer: {
+    marginHorizontal: 20,
+    marginVertical: 30,
+  },
   listContainer: {
     flex: 1,
     marginHorizontal: 20,

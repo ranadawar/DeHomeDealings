@@ -9,6 +9,7 @@ import { auth } from "../../firebase";
 import MainScreen from "../components/MainScreen";
 import LottieView from "lottie-react-native";
 import { UserContext } from "../context/userContext";
+import servicecolors from "../config/servicecolors";
 const ProfileScreen = ({ navigation }) => {
   const { user, userDataLoading } = React.useContext(UserContext);
 
@@ -43,11 +44,24 @@ const ProfileScreen = ({ navigation }) => {
               title="My Listings"
               icon="post"
               onPress={() => navigation.navigate("Mylisting")}
+              iconStyle={servicecolors.two}
             />
             <LinkComponents
               title="My Sent Offers"
               icon="cash"
               onPress={() => navigation.navigate("mysentoffers")}
+              iconStyle={servicecolors.seven}
+            />
+            <LinkComponents
+              title="My Orders"
+              icon="cash"
+              onPress={() => navigation.navigate("myorders")}
+            />
+            <LinkComponents
+              title="Listings Orders"
+              icon="cash"
+              onPress={() => navigation.navigate("ownerorders")}
+              iconStyle={COLORS.primary}
             />
             <LinkComponents
               title="Reports"

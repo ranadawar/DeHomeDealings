@@ -12,6 +12,8 @@ import { UserProvider } from "./app/context/userContext";
 import { ListingsProvider } from "./app/context/listingContext";
 import { AgreementsProvider } from "./app/context/agreementContext";
 import { BanksProvider } from "./app/context/banksContext";
+import { AllUsersProvider } from "./app/context/allUsersContext";
+import { OrdersProvider } from "./app/context/ordersContext";
 
 const theme = {
   ...DefaultTheme,
@@ -46,17 +48,21 @@ const App = () => {
 
   if (!fontsLoaded) return null;
   return (
-    <AgreementsProvider>
-      <BanksProvider>
-        <ListingsProvider>
-          <UserProvider>
-            <NavigationContainer theme={theme}>
-              {user ? <TabNavigator /> : <AuthNavigator />}
-            </NavigationContainer>
-          </UserProvider>
-        </ListingsProvider>
-      </BanksProvider>
-    </AgreementsProvider>
+    <AllUsersProvider>
+      <OrdersProvider>
+        <AgreementsProvider>
+          <BanksProvider>
+            <ListingsProvider>
+              <UserProvider>
+                <NavigationContainer theme={theme}>
+                  {user ? <TabNavigator /> : <AuthNavigator />}
+                </NavigationContainer>
+              </UserProvider>
+            </ListingsProvider>
+          </BanksProvider>
+        </AgreementsProvider>
+      </OrdersProvider>
+    </AllUsersProvider>
   );
 };
 

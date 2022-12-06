@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
+import { Alert } from "react-native";
 import { sendNotification } from "../api/expoPushToken";
 export const randomString = (length) => {
   var result = "";
@@ -28,17 +30,29 @@ export const getUserAndSendNotification = async (
   route
 ) => {
   //find the user with the id in the users array and get the token
-  const user = users.find((user) => user.id === id);
+  const user = users.find((user) => user.uid === id);
   const token = user.token;
   console.log("tokennnnnnnnnnnnnnnnnnnnnnnnn", token);
   //send notification to the user
   const message = {
     to: token,
     sound: "default",
-    title: "Ride Request",
+    title: "De Home Dealing",
     body: bodyRequest,
     data: { route: route },
   };
 
   sendNotification(message);
+};
+
+export const storeInFavorites = async (listing) => {
+  //get favorite listings from async storage
+  const favorites = await AsyncStorage.getItem("favorites");
+  //if favorites is not null, parse it to json
+  const favoritesJson = favorites !== null ? JSON.parse(favorites) : [];
+  //add the listing to the favorites array
+  favoritesJson.push(listing);
+  //save the favorites array to async storage
+  await AsyncStorage.setItem("favorites", JSON.stringify(favoritesJson));
+  Alert.alert("Listing added to favorites");
 };

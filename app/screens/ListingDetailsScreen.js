@@ -131,7 +131,10 @@ function ListingDetailsScreen({ route, navigation }) {
         </View>
 
         <View style={styles.ownerDetailsContainer}>
-          <PersonDetailsContainer ownerName={data.postedBy.username} />
+          <PersonDetailsContainer
+            onPress={() => navigation.navigate("viewfeedbacks")}
+            ownerName={data.postedBy.username}
+          />
         </View>
       </ScrollView>
     </View>
