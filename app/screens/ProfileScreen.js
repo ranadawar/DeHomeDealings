@@ -80,10 +80,16 @@ const ProfileScreen = ({ navigation }) => {
               onPress={() => navigation.navigate("showpayments")}
             />
             <LinkComponents
-              title="Sell Service"
+              title="My Services Listings"
               iconStyle="brown"
               icon="face-man"
               onPress={() => navigation.navigate("Selling")}
+            />
+            <LinkComponents
+              title="Service Bookings"
+              iconStyle="cyan"
+              icon="face-man"
+              onPress={() => navigation.navigate("mybookingrequests")}
             />
           </View>
           <View style={styles.bottomContainer}>

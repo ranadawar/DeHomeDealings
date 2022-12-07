@@ -11,6 +11,7 @@ import MainScreen from "../../components/MainScreen";
 import colors from "../../config/colors";
 import { FONTS, COLORS } from "../../constants/theme";
 import AppButton from "../../components/AppButton";
+import WithHeading from "../../components/WithHeading";
 
 const ServiceListingDetails = ({ route, navigation }) => {
   const data = route.params;
@@ -35,6 +36,12 @@ const ServiceListingDetails = ({ route, navigation }) => {
             <Text style={styles.descriptionTitle}>Description</Text>
             <Text style={styles.description}>{data.description}</Text>
           </View>
+
+          <View style={styles.aContainer}>
+            <WithHeading heading="Our Address:" data={data.address} />
+            <WithHeading heading="Area" data={data.area.label} />
+            <WithHeading heading="City:" data={data.city.label} />
+          </View>
           <View style={styles.btnContainer}>
             <AppButton
               title="Book Now!"
@@ -43,12 +50,9 @@ const ServiceListingDetails = ({ route, navigation }) => {
             <AppButton
               title="Call Us Now!"
               color={colors.secondary}
-              onPress={() => Linking.openURL(`tel:${data.total}`)}
-            />
-            <AppButton
-              title="Send Us a Request!"
-              color={colors.primary}
-              onPress={() => Linking.openURL(`tel:${data.total}`)}
+              onPress={() =>
+                Linking.openURL(`tel:${data.postedBy.phoneNumber}`)
+              }
             />
           </View>
         </View>
@@ -68,8 +72,12 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 10,
   },
+  aContainer: {
+    marginHorizontal: 20,
+  },
   btnContainer: {
     marginHorizontal: 20,
+    marginVertical: 20,
   },
   description: {
     color: COLORS.primary,

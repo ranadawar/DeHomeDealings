@@ -14,6 +14,7 @@ import { AgreementsProvider } from "./app/context/agreementContext";
 import { BanksProvider } from "./app/context/banksContext";
 import { AllUsersProvider } from "./app/context/allUsersContext";
 import { OrdersProvider } from "./app/context/ordersContext";
+import { ServicesProvider } from "./app/context/servicesContext";
 
 const theme = {
   ...DefaultTheme,
@@ -53,11 +54,13 @@ const App = () => {
         <AgreementsProvider>
           <BanksProvider>
             <ListingsProvider>
-              <UserProvider>
-                <NavigationContainer theme={theme}>
-                  {user ? <TabNavigator /> : <AuthNavigator />}
-                </NavigationContainer>
-              </UserProvider>
+              <ServicesProvider>
+                <UserProvider>
+                  <NavigationContainer theme={theme}>
+                    {user ? <TabNavigator /> : <AuthNavigator />}
+                  </NavigationContainer>
+                </UserProvider>
+              </ServicesProvider>
             </ListingsProvider>
           </BanksProvider>
         </AgreementsProvider>

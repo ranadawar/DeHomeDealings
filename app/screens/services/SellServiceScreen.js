@@ -29,10 +29,12 @@ import { auth, db } from "../../../firebase";
 import { doc, setDoc } from "firebase/firestore";
 import MainScreen from "../../components/MainScreen";
 import { UserContext } from "../../context/userContext";
+import { randomString } from "../../global/functions";
 
 const postAdInitialValues = {
   title: "",
   description: "",
+  price: "",
   address: "",
   userId: "",
   category: null,
@@ -53,6 +55,13 @@ const postAdValidationSchema = yup.object().shape({
     .required()
     .min(15)
     .label("Description"),
+  price: yup
+    .string()
+    .required()
+    .min(1)
+    .max(12)
+    .label("Price"),
+
   address: yup
     .string()
     .required()
@@ -86,9 +95,10 @@ const SellServiceScreen = ({ navigation }) => {
   const postData = async (values) => {
     console.log("entered");
     const tareekh = new Date().toDateString();
+    const serviceListingId = randomString(35);
 
     try {
-      setDoc(doc(db, "servicelistings", auth.currentUser.uid), {
+      setDoc(doc(db, "servicelistings", serviceListingId), {
         title: values.title,
         description: values.description,
         address: values.address,
@@ -97,6 +107,7 @@ const SellServiceScreen = ({ navigation }) => {
         city: values.city,
         area: values.area,
         userId: auth.currentUser.uid,
+        docId: serviceListingId,
         postedTime: tareekh,
         rating: 5,
         postedBy: user,
@@ -145,6 +156,13 @@ const SellServiceScreen = ({ navigation }) => {
                     numberOfLines={3}
                   />
                   <AppFormField
+                    placeholder="Enter Price"
+                    icon="cash"
+                    name="price"
+                    iconColor={COLORS.secondary}
+                    keyboardType="email-address"
+                  />
+                  <AppFormField
                     placeholder="Street#/Street Name"
                     icon="google-maps"
                     name="address"
@@ -180,13 +198,15 @@ const SellServiceScreen = ({ navigation }) => {
       <Modal visible={posted} animationType="slide">
         {posted && (
           <>
-            <AppButton
-              color={servicecolors.five}
-              title="Go Back"
-              onPress={() => {
-                setPosted(false);
-              }}
-            />
+            <View style={{ marginHorizontal: 35 }}>
+              <AppButton
+                color={servicecolors.five}
+                title="Go Back"
+                onPress={() => {
+                  setPosted(false);
+                }}
+              />
+            </View>
             <View style={{ flex: 1 }}>
               <LottieView
                 source={require("../../animations/done.json")}

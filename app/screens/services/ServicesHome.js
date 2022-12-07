@@ -9,43 +9,33 @@ import ServiceItem from "../../components/ServiceItem";
 import ServiceCard from "../../components/ServiceCard";
 import { db } from "../../../firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { ServicesListingsContext } from "../../context/servicesContext";
+import AppButton from "../../components/AppButton";
+import { UserContext } from "../../context/userContext";
 
 const ServicesHome = ({ navigation }) => {
-  const [listings, setListings] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-
-  React.useEffect(() => {
-    getLisings();
-  }, []);
-
-  const getLisings = async () => {
-    try {
-      setLoading(true);
-      const colRef = collection(db, "servicelistings");
-      const snapshot = await getDocs(colRef);
-      var myData = [];
-      //store the data in an array myData
-      snapshot.forEach((doc) => {
-        myData.push({ ...doc.data() });
-      });
-      console.log(myData);
-
-      setListings(myData);
-
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const {
+    servicesListings,
+    setServicesListings,
+    loadServicesListings,
+    setLoadServicesListings,
+  } = React.useContext(ServicesListingsContext);
+  const { user, setUser } = React.useContext(UserContext);
 
   return (
     <View style={styles.mainContainer}>
       <View style={styles.topContainer}>
-        <MediumText style={styles.nameText}>Hello Dawar👋</MediumText>
+        <MediumText style={styles.nameText}>Hello {user.username}👋</MediumText>
         <ExtraLargeText style={styles.bigText}>
           What you are looking for today
         </ExtraLargeText>
-        <SearchBoxServices />
+        <View style={styles.mainBtn}>
+          <AppButton
+            title="See All Listings"
+            color={servicecolors.primary}
+            onPress={() => navigation.navigate("serviceslistings")}
+          />
+        </View>
       </View>
 
       <View style={styles.middleContainer}>
@@ -83,7 +73,7 @@ const ServicesHome = ({ navigation }) => {
         </ExtraLargeText>
         <FlatList
           showsHorizontalScrollIndicator={false}
-          data={listings}
+          data={servicesListings}
           keyExtractor={(item) => item.description.toString()}
           renderItem={({ item }) => <ServiceCard title={item.title} />}
         />
@@ -113,6 +103,9 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 24,
     color: servicecolors.font,
+  },
+  mainBtn: {
+    marginHorizontal: 39,
   },
   mainContainer: {
     flex: 1,

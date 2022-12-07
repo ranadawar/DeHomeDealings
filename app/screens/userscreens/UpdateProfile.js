@@ -100,7 +100,7 @@ const UpdateProfile = () => {
     console.log("entered");
     try {
       await updateDoc(doc(db, "users", auth.currentUser.uid), {
-        profilePicture: images[0],
+        images: images,
         username: values.userName,
         phoneNumber: values.phoneNumber,
       });

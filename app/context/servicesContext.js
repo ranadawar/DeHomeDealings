@@ -3,7 +3,7 @@ import React from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../firebase";
 
-const ListingsContext = React.createContext("");
+const ServicesListingsContext = React.createContext("");
 
 const ServicesProvider = ({ children }) => {
   const [servicesListings, setServicesListings] = React.useState([]);
@@ -12,7 +12,7 @@ const ServicesProvider = ({ children }) => {
   const getListings = async () => {
     setLoadServicesListings(true);
     try {
-      const colRef = collection(db, "listings");
+      const colRef = collection(db, "servicelistings");
       const snapshot = await getDocs(colRef);
       var myData = [];
       //store the data in an array myData
@@ -35,17 +35,17 @@ const ServicesProvider = ({ children }) => {
   }, []);
 
   return (
-    <ListingsContext.Provider
+    <ServicesListingsContext.Provider
       value={{
-        listings: servicesListings,
-        setListings: setServicesListings,
-        loadListings: loadServicesListings,
-        setLoadListings: setLoadServicesListings,
+        servicesListings,
+        setServicesListings,
+        loadServicesListings,
+        setLoadServicesListings,
       }}
     >
       {children}
-    </ListingsContext.Provider>
+    </ServicesListingsContext.Provider>
   );
 };
 
-export { ListingsContext, ServicesProvider as ListingsProvider };
+export { ServicesListingsContext, ServicesProvider };

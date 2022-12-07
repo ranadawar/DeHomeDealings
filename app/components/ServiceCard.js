@@ -3,6 +3,7 @@ import {
   View,
   Image,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from "react-native";
 import React from "react";
 
@@ -15,11 +16,11 @@ const ServiceCard = ({
   imageUrl = "https://images.unsplash.com/photo-1604754742629-3e5728249d73?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
   title = "AC Check-up",
   price = 128,
-  averageRating = 4.8,
+  averageRating = 5,
   onPress,
 }) => {
   return (
-    <TouchableWithoutFeedback onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <View style={styles.mainContainer}>
         {/* Image Container Starts */}
         <View style={styles.imageContainer}>
@@ -49,15 +50,8 @@ const ServiceCard = ({
           </View>
           {/* Price Container Ends */}
         </View>
-        <View style={styles.goIconContainer}>
-          <MaterialCommunityIcons
-            name="chevron-right"
-            color={COLORS.white}
-            size={30}
-          />
-        </View>
       </View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 

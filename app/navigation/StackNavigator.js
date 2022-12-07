@@ -52,6 +52,9 @@ import GiveFeedback from "../screens/GiveFeedback";
 import ViewFeedbacks from "../screens/ViewFeedbacks";
 import ShowPayments from "../screens/ShowPayments";
 import DisplayFavoriteListings from "../screens/DisplayFavoriteListings";
+import ServicesListings from "../screens/ServicesListings";
+import MyServiceListings from "../screens/services/MyServiceListings";
+import MyBookingRequests from "../screens/services/MyBookingRequests";
 
 const Stack = createNativeStackNavigator();
 
@@ -119,6 +122,9 @@ const StackNavigator = () => {
       <Stack.Screen name="viewfeedbacks" component={ViewFeedbacks} />
       <Stack.Screen name="showpayments" component={ShowPayments} />
       <Stack.Screen name="showfav" component={DisplayFavoriteListings} />
+      <Stack.Screen name="serviceslistings" component={ServicesListings} />
+      <Stack.Screen name="myservicelisting" component={MyServiceListings} />
+      <Stack.Screen name="mybookingrequests" component={MyBookingRequests} />
     </Stack.Navigator>
   );
 };
