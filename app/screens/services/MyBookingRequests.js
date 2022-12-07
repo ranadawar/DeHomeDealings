@@ -1,4 +1,12 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  Modal,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -8,6 +16,7 @@ import MainScreen from "../../components/MainScreen";
 import LottieView from "lottie-react-native";
 import { COLORS, FONTS } from "../../constants/theme";
 import AppHeader from "../../components/AppHeader";
+import ServiceBookingCard from "../../components/ServiceBookingCard";
 
 const MyBookingRequests = () => {
   const navigation = useNavigation();
@@ -22,13 +31,17 @@ const MyBookingRequests = () => {
     setUpdatedData(filteredData);
   };
 
+  React.useEffect(() => {
+    getBookings();
+  }, []);
+
   const getBookings = async () => {
     try {
       setLoading(true);
       //    get all the docs where the userId is equal to auth.currentUser.uid
       // get all the docs from booking collection where listingId is equal to data.listingId
       const q = query(
-        collection(db, "servicebookings"),
+        collection(db, "serviceBookings"),
         where("userId", "==", auth.currentUser.uid)
       );
       const querySnapshot = await getDocs(q);
@@ -36,6 +49,7 @@ const MyBookingRequests = () => {
       querySnapshot.forEach((doc) => {
         myData.push({ ...doc.data() });
       });
+      console.log(myData);
       setBooking(myData);
       filterData();
       setLoading(false);
@@ -51,9 +65,33 @@ const MyBookingRequests = () => {
           titleScreen="My Service Bookings"
           onPress={() => navigation.goBack()}
         />
-        <View style={styles.mainContainer}>
-          <Text style={styles.title}>My Booking Requests</Text>
-        </View>
+        {updatedData.length > 0 ? (
+          <View style={styles.mainContainer}>
+            <Text style={styles.title}>My Booking Requests</Text>
+            <FlatList
+              data={updatedData}
+              keyExtractor={(item) => item.bookingId}
+              renderItem={({ item }) => (
+                <ServiceBookingCard
+                  data={item}
+                  onPress={() =>
+                    navigation.navigate("servicebookingdetails", item)
+                  }
+                />
+              )}
+            />
+          </View>
+        ) : (
+          <View style={styles.noMainContainer}>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={getBookings} />
+              }
+            >
+              <Text style={styles.noTitle}>No Booking Requests</Text>
+            </ScrollView>
+          </View>
+        )}
       </MainScreen>
       <Modal visible={loading}>
         <View style={{ flex: 1 }}>
@@ -82,4 +120,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 20,
   },
+  noMainContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noTitle: {},
 });

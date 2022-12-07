@@ -2,8 +2,9 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import WithHeading from "./WithHeading";
 import AppButton from "./AppButton";
+import { COLORS } from "../constants/theme";
 
-const ServiceBookingCard = (data) => {
+const ServiceBookingCard = ({ data, onPress }) => {
   return (
     <View style={styles.mainContainer}>
       <WithHeading heading="Needed on:" data={data.date} />
@@ -21,4 +22,12 @@ const ServiceBookingCard = (data) => {
 
 export default ServiceBookingCard;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  mainContainer: {
+    backgroundColor: COLORS.white,
+    padding: 15,
+    borderRadius: 20,
+    marginVertical: 10,
+    marginHorizontal: 10,
+  },
+});

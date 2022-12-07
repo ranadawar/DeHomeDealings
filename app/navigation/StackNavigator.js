@@ -55,6 +55,9 @@ import DisplayFavoriteListings from "../screens/DisplayFavoriteListings";
 import ServicesListings from "../screens/ServicesListings";
 import MyServiceListings from "../screens/services/MyServiceListings";
 import MyBookingRequests from "../screens/services/MyBookingRequests";
+import ServiceBookingDetails from "../screens/services/ServiceBookingDetails";
+import { ServicesCommentScreen } from "../screens/services/ServicesCommentScreen";
+import OffersReceived from "../screens/services/OffersReceived";
 
 const Stack = createNativeStackNavigator();
 
@@ -125,6 +128,15 @@ const StackNavigator = () => {
       <Stack.Screen name="serviceslistings" component={ServicesListings} />
       <Stack.Screen name="myservicelisting" component={MyServiceListings} />
       <Stack.Screen name="mybookingrequests" component={MyBookingRequests} />
+      <Stack.Screen
+        name="servicebookingdetails"
+        component={ServiceBookingDetails}
+      />
+      <Stack.Screen
+        name="servicescommentscreen"
+        component={ServicesCommentScreen}
+      />
+      <Stack.Screen name="serviceoffersreceived" component={OffersReceived} />
     </Stack.Navigator>
   );
 };
