@@ -14,15 +14,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": [
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["remote-notification"]
       },
       "bundleIdentifier": "com.ranadawar.DriveAnywhere",
       "buildNumber": "1.0.0"
@@ -30,12 +26,11 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF",
-        "package": "com.ranadawar.dehomedealing",
-        "googleServicesFile": "./google-services.json",
-        "versionCode": 1
+        "backgroundColor": "#FFFFFF"
       },
-      "package": "com.ranadawar.dehomedealing"
+      "package": "com.ranadawar.dehomedealing",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

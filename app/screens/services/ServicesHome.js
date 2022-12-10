@@ -1,4 +1,10 @@
-import { StyleSheet, FlatList, View } from "react-native";
+import {
+  StyleSheet,
+  FlatList,
+  View,
+  ImageBackground,
+  Text,
+} from "react-native";
 import React from "react";
 import MediumText from "../../components/texts/MediumText";
 import ExtraLargeText from "../../components/texts/ExtraLargeText";
@@ -12,6 +18,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { ServicesListingsContext } from "../../context/servicesContext";
 import AppButton from "../../components/AppButton";
 import { UserContext } from "../../context/userContext";
+import { FONTS } from "../../constants/theme";
 
 const ServicesHome = ({ navigation }) => {
   const {
@@ -29,54 +36,33 @@ const ServicesHome = ({ navigation }) => {
         <ExtraLargeText style={styles.bigText}>
           What you are looking for today
         </ExtraLargeText>
-        <View style={styles.mainBtn}>
-          <AppButton
-            title="See All Listings"
-            color={servicecolors.primary}
-            onPress={() => navigation.navigate("serviceslistings")}
-          />
-        </View>
+
+        <AppButton
+          title="See All Listings"
+          color={servicecolors.primary}
+          onPress={() => navigation.navigate("serviceslistings")}
+        />
       </View>
 
       <View style={styles.middleContainer}>
-        <ServiceItem
-          bgColor={servicecolors.one}
-          title="AC Repair"
-          margr={27}
-          icon="air-conditioner"
-          onPress={() => navigation.navigate("Servicelistings")}
-        />
-        <ServiceItem
-          bgColor={servicecolors.two}
-          title="Beauty"
-          margr={27}
-          icon="hair-dryer"
-        />
-        <ServiceItem
-          bgColor={servicecolors.three}
-          title="Appliances"
-          margr={27}
-          icon="fridge"
-        />
-        <ServiceItem
-          bgColor={servicecolors.light}
-          title="See More"
-          margr={27}
-          icon="arrow-right"
+        <AppButton
+          title="All Services"
           onPress={() => navigation.navigate("allservices")}
         />
       </View>
 
       <View style={styles.bottomContainer}>
-        <ExtraLargeText style={styles.heading}>
-          Top Cleaning Services
-        </ExtraLargeText>
-        <FlatList
-          showsHorizontalScrollIndicator={false}
-          data={servicesListings}
-          keyExtractor={(item) => item.description.toString()}
-          renderItem={({ item }) => <ServiceCard title={item.title} />}
-        />
+        <ImageBackground
+          source={require("../../../assets/images/loginbg.jpg")}
+          style={styles.image}
+          blurRadius={7}
+        >
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <Text style={styles.service}>Services For You!</Text>
+          </View>
+        </ImageBackground>
       </View>
     </View>
   );
@@ -114,6 +100,12 @@ const styles = StyleSheet.create({
   nameText: {
     marginTop: 10,
   },
+  service: {
+    fontSize: 24,
+    color: servicecolors.white,
+
+    fontFamily: FONTS.bold,
+  },
 
   topContainer: {
     backgroundColor: servicecolors.white,
@@ -130,6 +122,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginVertical: 10,
     borderRadius: 20,
-    flexDirection: "row",
+    textAlign: "center",
+  },
+  image: {
+    height: "100%",
+    width: "100%",
+    overflow: "hidden",
   },
 });

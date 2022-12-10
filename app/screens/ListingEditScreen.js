@@ -35,6 +35,7 @@ import FormImagePicker from "../components/form/FormImagePicker";
 import moment from "moment";
 import { UserContext } from "../context/userContext";
 import { useContext } from "react";
+import LocationInput from "../components/LocationInput";
 
 const postAdInitialValues = {
   title: "",
@@ -259,6 +260,7 @@ const ListingEditScreen = ({ navigation }) => {
                     iconColor={COLORS.secondary}
                     keyboardType="email-address"
                   />
+                  <LocationInput />
                   <AppFormField
                     placeholder="Enter Description"
                     icon="details"

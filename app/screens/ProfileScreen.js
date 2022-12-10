@@ -91,6 +91,24 @@ const ProfileScreen = ({ navigation }) => {
               icon="face-man"
               onPress={() => navigation.navigate("mybookingrequests")}
             />
+            <LinkComponents
+              title="Service Orders"
+              iconStyle="black"
+              icon="face-man"
+              onPress={() => navigation.navigate("userviceorders")}
+            />
+            <LinkComponents
+              title="Listing Services Orders"
+              iconStyle="green"
+              icon="face-man"
+              onPress={() => navigation.navigate("oserviceorders")}
+            />
+            <LinkComponents
+              title="Map"
+              iconStyle="green"
+              icon="face-man"
+              onPress={() => navigation.navigate("mapscreen")}
+            />
           </View>
           <View style={styles.bottomContainer}>
             <Text style={styles.midTitle}>General</Text>
@@ -101,9 +119,10 @@ const ProfileScreen = ({ navigation }) => {
               onPress={() => navigation.navigate("updateprofile")}
             />
             <LinkComponents
-              title="Contact Support"
+              title="Recommended Listings"
               iconStyle="purple"
-              icon="help-box"
+              icon="email"
+              onPress={() => navigation.navigate("recommended")}
             />
             <LinkComponents
               title="Report a problem"

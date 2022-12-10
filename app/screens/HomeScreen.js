@@ -19,11 +19,17 @@ import { useNavigation } from "@react-navigation/native";
 import LottieView from "lottie-react-native";
 import { UserContext } from "../context/userContext";
 import { ListingsContext } from "../context/listingContext";
+import useLocation from "../hooks/useLocation";
 
 const HomeScreen = ({ navigation }) => {
   const navigations = useNavigation();
   const { userDataLoading, user } = React.useContext(UserContext);
   const { listings, loadListings } = React.useContext(ListingsContext);
+  const location = useLocation();
+
+  React.useEffect(() => {
+    console.log("location", location);
+  }, [location]);
 
   return (
     <>

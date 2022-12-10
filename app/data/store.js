@@ -121,12 +121,6 @@ export const userTypes = [
 
 export const dealCategories = [
   {
-    label: "Rent",
-    value: 1,
-    backgroundColor: servicecolors.one,
-    icon: "account-cash",
-  },
-  {
     label: "Sell",
     value: 2,
     backgroundColor: servicecolors.two,

@@ -58,6 +58,14 @@ import MyBookingRequests from "../screens/services/MyBookingRequests";
 import ServiceBookingDetails from "../screens/services/ServiceBookingDetails";
 import { ServicesCommentScreen } from "../screens/services/ServicesCommentScreen";
 import OffersReceived from "../screens/services/OffersReceived";
+import OwnerSBDetails from "../screens/services/OwnerSBDetails";
+import UserviceOrders from "../screens/UserviceOrders";
+import OwnerServiceOrders from "../screens/services/OwnerServiceOrders";
+import UserviceOrderDetail from "../screens/services/UserviceOrderDetail";
+import OwnerServiceOrderDetails from "../screens/services/OwnerServiceOrderDetails";
+import SearchResults from "../screens/SearchResults";
+import Recommender from "../screens/Recommender";
+import MapScreen from "../screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -137,6 +145,20 @@ const StackNavigator = () => {
         component={ServicesCommentScreen}
       />
       <Stack.Screen name="serviceoffersreceived" component={OffersReceived} />
+      <Stack.Screen name="ownersbdetails" component={OwnerSBDetails} />
+      <Stack.Screen name="userviceorders" component={UserviceOrders} />
+      <Stack.Screen name="oserviceorders" component={OwnerServiceOrders} />
+      <Stack.Screen
+        name="userviceorderdetails"
+        component={UserviceOrderDetail}
+      />
+      <Stack.Screen
+        name="ownerserviceorderdetails"
+        component={OwnerServiceOrderDetails}
+      />
+      <Stack.Screen name="searchresults" component={SearchResults} />
+      <Stack.Screen name="recommended" component={Recommender} />
+      <Stack.Screen name="mapscreen" component={MapScreen} />
     </Stack.Navigator>
   );
 };
