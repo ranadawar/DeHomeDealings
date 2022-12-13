@@ -24,6 +24,7 @@ const Card = ({
           source={{ uri: imgUrl }}
           style={styles.imageThumbnail}
           title={title}
+          resizeMode="cover"
         />
       </View>
 

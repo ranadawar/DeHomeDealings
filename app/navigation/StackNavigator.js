@@ -29,7 +29,6 @@ import QrCodeListingDetails from "../screens/QrCodeListingDetails";
 import UpdateProfile from "../screens/userscreens/UpdateProfile";
 import SendOfferScreen from "../screens/SendOfferScreen";
 import ViewMyHomeOffers from "../screens/ViewMyHomeOffers";
-import DetailedImages from "../screens/DetailedImages";
 import ServiceBookingForm from "../screens/services/ServiceBookingForm";
 import BookingHouse from "../screens/BookingHouse";
 import MyOffers from "../screens/MyOffers";
@@ -66,6 +65,9 @@ import OwnerServiceOrderDetails from "../screens/services/OwnerServiceOrderDetai
 import SearchResults from "../screens/SearchResults";
 import Recommender from "../screens/Recommender";
 import MapScreen from "../screens/MapScreen";
+import OwnerBankAccount from "../screens/OwnerBankAccount";
+import CardPayment from "../screens/CardPayment";
+import DetailedImage from "../screens/DetailedImage";
 
 const Stack = createNativeStackNavigator();
 
@@ -106,7 +108,6 @@ const StackNavigator = () => {
       <Stack.Screen name="sendofferhome" component={SendOfferScreen} />
 
       <Stack.Screen name="viewmyhomeoffers" component={ViewMyHomeOffers} />
-      <Stack.Screen name="detailedImage" component={DetailedImages} />
       <Stack.Screen name="myoffers" component={MyOffers} />
       <Stack.Screen
         name="ownerOfferDetail"
@@ -159,6 +160,9 @@ const StackNavigator = () => {
       <Stack.Screen name="searchresults" component={SearchResults} />
       <Stack.Screen name="recommended" component={Recommender} />
       <Stack.Screen name="mapscreen" component={MapScreen} />
+      <Stack.Screen name="ownerbankdetails" component={OwnerBankAccount} />
+      <Stack.Screen name="cardpayment" component={CardPayment} />
+      <Stack.Screen name="detailedImage" component={DetailedImage} />
     </Stack.Navigator>
   );
 };

@@ -11,9 +11,10 @@ import MainScreen from "../components/MainScreen";
 import AppHeader from "../components/AppHeader";
 import { useNavigation } from "@react-navigation/native";
 import { OrdersContext } from "../context/ordersContext";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { COLORS, FONTS } from "../constants/theme";
 import OrderCard from "../components/OrderCard";
+import { collection, getDocs } from "firebase/firestore";
 
 const OwnerOrders = () => {
   const navigation = useNavigation();
@@ -55,23 +56,30 @@ const OwnerOrders = () => {
         />
         {myOrders.length > 0 ? (
           <View style={styles.mainContainer}>
-            <Text style={styles.titleYes}>My Orders</Text>
-            <FlatList
-              data={myOrders}
-              keyExtractor={(item) => item.orderId}
-              renderItem={({ item }) => (
-                <OrderCard
-                  data={item}
-                  onPressButton={() => {
-                    if (item.orderStatus === "started") {
-                      navigation.navigate("viewownerorderdetails", item);
-                    } else {
-                      navigation.navigate("completedscreen", item);
-                    }
-                  }}
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={ordersLoading}
+                  onRefresh={getOrders}
                 />
-              )}
-            />
+              }
+            >
+              <Text style={styles.titleYes}>My Orders</Text>
+              {myOrders.map((item, index) => (
+                <View key={index}>
+                  <OrderCard
+                    data={item}
+                    onPressButton={() => {
+                      if (item.orderStatus === "started") {
+                        navigation.navigate("viewownerorderdetails", item);
+                      } else {
+                        navigation.navigate("completedscreen", item);
+                      }
+                    }}
+                  />
+                </View>
+              ))}
+            </ScrollView>
           </View>
         ) : (
           <View style={styles.noMainContainer}>

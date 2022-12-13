@@ -122,8 +122,14 @@ export const userTypes = [
 export const dealCategories = [
   {
     label: "Sell",
-    value: 2,
+    value: 1,
     backgroundColor: servicecolors.two,
+    icon: "cash-check",
+  },
+  {
+    label: "Rent",
+    value: 2,
+    backgroundColor: servicecolors.one,
     icon: "cash-check",
   },
 ];

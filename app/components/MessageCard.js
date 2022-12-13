@@ -11,6 +11,9 @@ const MessageCard = ({ user, message = "This is my message", image, time }) => {
         user === auth.currentUser.uid ? styles.myMessage : styles.otherMessage
       }
     >
+      <View>
+        <Text style={styles.sentText}>{user.username}</Text>
+      </View>
       <Text
         style={user === auth.currentUser.uid ? styles.textMe : styles.textOther}
       >
@@ -76,5 +79,10 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontFamily: FONTS.regular,
     alignSelf: "flex-end",
+  },
+  sentText: {
+    color: COLORS.gray,
+    fontSize: 12,
+    fontFamily: FONTS.bold,
   },
 });

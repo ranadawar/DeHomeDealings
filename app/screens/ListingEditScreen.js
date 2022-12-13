@@ -260,7 +260,7 @@ const ListingEditScreen = ({ navigation }) => {
                     iconColor={COLORS.secondary}
                     keyboardType="email-address"
                   />
-                  <LocationInput />
+
                   <AppFormField
                     placeholder="Enter Description"
                     icon="details"
@@ -332,7 +332,7 @@ const ListingEditScreen = ({ navigation }) => {
                   <AppFormPicker
                     items={areas}
                     name="area"
-                    placeholder="Select Area"
+                    placeholder="Select Area in marla"
                   />
 
                   <SubmitButton title="Post" />

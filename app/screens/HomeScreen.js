@@ -20,15 +20,21 @@ import LottieView from "lottie-react-native";
 import { UserContext } from "../context/userContext";
 import { ListingsContext } from "../context/listingContext";
 import useLocation from "../hooks/useLocation";
+import useUser from "../hooks/useUser";
 
 const HomeScreen = ({ navigation }) => {
   const navigations = useNavigation();
-  const { userDataLoading, user } = React.useContext(UserContext);
   const { listings, loadListings } = React.useContext(ListingsContext);
+  const [visibility, setVisibility] = React.useState(true);
   const location = useLocation();
 
-  React.useEffect(() => {
-    console.log("location", location);
+  const user = useUser();
+
+  React.useLayoutEffect(() => {
+    setTimeout(() => {
+      setVisibility(false);
+      console.log("user from async storage", user);
+    }, 3000);
   }, [location]);
 
   return (
@@ -45,6 +51,7 @@ const HomeScreen = ({ navigation }) => {
               <HomeSection
                 name={user.username}
                 onPress={() => navigation.navigate("Verify")}
+                user={user}
               />
               <View style={styles.btnsContainer}>
                 <LinkButton
@@ -93,7 +100,7 @@ const HomeScreen = ({ navigation }) => {
           </ScrollView>
         </View>
       </MainScreen>
-      <Modal visible={userDataLoading && loadListings}>
+      <Modal visible={visibility}>
         <View style={{ flex: 1 }}>
           <LottieView
             source={require("../../assets/animations/house.json")}

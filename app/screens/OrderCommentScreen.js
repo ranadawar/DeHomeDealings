@@ -91,7 +91,7 @@ export function OrderCommentScreen({ route }) {
             {messages.map((message, index) => (
               <View style={{ width: "100%" }} key={index}>
                 <MessageCard
-                  user={message.user.id}
+                  user={message.user}
                   message={message.message}
                   time={message.createdAt}
                 />

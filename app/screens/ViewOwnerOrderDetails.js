@@ -118,33 +118,47 @@ const ViewOwnerOrderDetails = ({ route }) => {
                 />
               </View>
 
-              {myData.paymentStatus === "paid" && myData.payment && (
-                <View>
-                  <Text style={styles.texo}>Payment Details</Text>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate(
-                        "displayscreenshot",
-                        myData.payment.images[0]
-                      )
-                    }
-                    style={styles.imageContainer}
-                  >
-                    <Image
-                      source={{ uri: myData.payment.images[0] }}
-                      style={styles.image}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
+              {myData.paymentStatus === "paid" &&
+                myData.paymentMethod !== "card" && (
+                  <View>
+                    <Text style={styles.texo}>Payment Details</Text>
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate(
+                          "displayscreenshot",
+                          myData.payment.images[0]
+                        )
+                      }
+                      style={styles.imageContainer}
+                    >
+                      <Image
+                        source={{ uri: myData.payment.images[0] }}
+                        style={styles.image}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
 
-                  <View style={styles.completeBtn}>
-                    <AppButton
-                      onPress={handleOrderComplete}
-                      title="Complete the order"
-                    />
+                    <View style={styles.completeBtn}>
+                      <AppButton
+                        onPress={handleOrderComplete}
+                        title="Complete the order"
+                      />
+                    </View>
                   </View>
-                </View>
-              )}
+                )}
+              {myData.paymentStatus === "paid" &&
+                myData.paymentMethod === "card" && (
+                  <View>
+                    <Text style={styles.texo}>User Paid with card</Text>
+
+                    <View style={styles.completeBtn}>
+                      <AppButton
+                        onPress={handleOrderComplete}
+                        title="Complete the order"
+                      />
+                    </View>
+                  </View>
+                )}
             </View>
           </ScrollView>
         </View>

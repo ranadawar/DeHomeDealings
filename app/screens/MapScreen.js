@@ -1,69 +1,71 @@
-//code to create a react native screen to pick location with the help of a marker and display the location on the screen
-//code to create a react native screen to pick location with the help of a marker and display the location on the screen
-
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { GOOGLE_API_KEY } from "../../env";
-import useLocation from "../hooks/useLocation";
-import { COLORS, SHADOWS } from "../constants/theme";
-import AutoComplete from "../components/AutoComplete";
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
 import MainScreen from "../components/MainScreen";
-import { ListingsContext } from "../context/listingContext";
 
-const { width, height } = Dimensions.get("window");
-
-const ASPECT_RATIO = width / height;
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+import MapView, { Marker, Circle } from "react-native-maps";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import AppHeader from "../components/AppHeader";
+import { useNavigation } from "@react-navigation/native";
 
 const MapScreen = () => {
-  const [location, setLocation] = useState();
-  const [errorMsg, setErrorMsg] = useState(null);
-  const { listings, setListings } = React.useContext(ListingsContext);
+  const [theRegion, setTheRegion] = React.useState({
+    //islamabad comsats university
+    latitude: 33.7215,
+    longitude: 73.0433,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
-  const myLocation = useLocation();
-
-  React.useLayoutEffect(() => {
-    console.log("location", location);
-    setLocation(myLocation);
-  }, [location]);
-
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
-
-  let initialRegion = {
-    latitude: 33.6844,
-    longitude: 73.0479,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
-  };
+  const navigation = useNavigation();
 
   return (
     <MainScreen>
-      <View style={styles.container}>
-        <MapView
-          style={styles.map}
-          //initialRegion to user locationh
-          initialRegion={location ? location : initialRegion}
-          provider={PROVIDER_GOOGLE}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          showsCompass={true}
-          showsTraffic={true}
-          showsIndoors={true}
-          showsBuildings={true}
-        >
-          {listings}
-        </MapView>
-        <View style={styles.searchBox}>
-          <AutoComplete />
+      <AppHeader titleScreen="Map Screen" onPress={() => navigation.goBack()} />
+      <View style={{ flex: 1 }}>
+        <View style={styles.search}>
+          <GooglePlacesAutocomplete
+            styles={{ textInput: styles.input }}
+            placeholder="Search"
+            fetchDetails={true}
+            GooglePlacesSearchQuery={{
+              rankby: "distance",
+            }}
+            onPress={(data, details = null) => {
+              // 'details' is provided when fetchDetails = true
+              setTheRegion({
+                latitude: details.geometry.location.lat,
+                longitude: details.geometry.location.lng,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              });
+              console.log(details.geometry.location);
+              //set region to the selected location coordinates
+            }}
+            query={{
+              key: "AIzaSyDxkPKY9o1rX6Zf3FdJe3Ti5qBxJ71KU4U",
+              language: "en",
+              components: "country:pk",
+              types: "(cities)",
+              radius: 30000,
+              location: `${theRegion.latitude}, ${theRegion.longitude}`,
+            }}
+          />
         </View>
+        <MapView style={{ flex: 1 }} initialRegion={theRegion}>
+          <Marker
+            coordinate={{
+              latitude: theRegion.latitude,
+              longitude: theRegion.longitude,
+            }}
+            title="My Marker"
+            draggable
+            onDragEnd={(e) =>
+              setTheRegion(console.log(e.nativeEvent.coordinate))
+            }
+            onPress={() => console.log("Marker pressed")}
+          ></Marker>
+          <Circle center={theRegion} radius={1000} />
+        </MapView>
       </View>
     </MainScreen>
   );
@@ -72,40 +74,22 @@ const MapScreen = () => {
 export default MapScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#ecf0f1",
-  },
-  map: {
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height,
-  },
-  paragraph: {
-    margin: 24,
+  input: {
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    borderColor: "#888",
     fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
+    borderWidth: 2,
+    color: "#888",
   },
 
-  textContainer: {
+  search: {
     position: "absolute",
-    bottom: 0,
-    backgroundColor: "white",
-    width: "100%",
-    height: 200,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  searchBox: {
-    position: "absolute",
-    width: "90%",
-    top: 50,
+    top: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: "#fff",
+    padding: 10,
     zIndex: 1,
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    padding: 8,
-    ...SHADOWS.medium,
   },
 });

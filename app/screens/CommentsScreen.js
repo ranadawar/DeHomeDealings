@@ -47,6 +47,7 @@ export function CommentsScreen({ route }) {
 
   useEffect(() => {
     getComments();
+    console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATA", data);
   }, [getComments]);
 
   //sendMessage function to add new comment to the collection comments
@@ -66,7 +67,18 @@ export function CommentsScreen({ route }) {
       .then((docRef) => {
         const bodyRequest = "Message Update";
         const route = "myorders";
-        getUserAndSendNotification(adminId, users, bodyRequest, route);
+        getUserAndSendNotification(
+          data.userData.uid,
+          users,
+          bodyRequest,
+          route
+        );
+        getUserAndSendNotification(
+          data.listing.postedBy.uid,
+          users,
+          bodyRequest,
+          route
+        );
         getComments();
         //update the frontend state of the messages array
       })
@@ -89,7 +101,7 @@ export function CommentsScreen({ route }) {
             {messages.map((message, index) => (
               <View style={{ width: "100%" }} key={index}>
                 <MessageCard
-                  user={message.user.id}
+                  user={message.user}
                   message={message.message}
                   time={message.createdAt}
                 />

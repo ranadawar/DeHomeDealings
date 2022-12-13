@@ -87,7 +87,7 @@ const OwnerServiceOrderDetails = ({ route }) => {
               }
             />
           </View>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.toCompleteText}>
               Task Done? Received Cash from customer?
             </Text>

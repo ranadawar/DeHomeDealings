@@ -46,7 +46,7 @@ const ServicesHome = ({ navigation }) => {
 
       <View style={styles.middleContainer}>
         <AppButton
-          title="All Services"
+          title="All Categories"
           onPress={() => navigation.navigate("allservices")}
         />
       </View>

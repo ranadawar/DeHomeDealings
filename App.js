@@ -16,6 +16,7 @@ import { AllUsersProvider } from "./app/context/allUsersContext";
 import { OrdersProvider } from "./app/context/ordersContext";
 import { ServicesProvider } from "./app/context/servicesContext";
 import { SordersProvider } from "./app/context/sOrdersContext";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const theme = {
   ...DefaultTheme,
@@ -57,11 +58,13 @@ const App = () => {
             <ListingsProvider>
               <ServicesProvider>
                 <SordersProvider>
-                  <UserProvider>
-                    <NavigationContainer theme={theme}>
-                      {user ? <TabNavigator /> : <AuthNavigator />}
-                    </NavigationContainer>
-                  </UserProvider>
+                  <StripeProvider publishableKey="pk_test_51LrHfaCHHxU4hGNy8oQdWJuSWwD0J9nNRmyyhyQNG0he8a5KOLNVhxE8lgZ2d7KhPfmlhgHETZAolwgVSoIC64Lw00EWtW8fvV">
+                    <UserProvider>
+                      <NavigationContainer theme={theme}>
+                        {user ? <TabNavigator /> : <AuthNavigator />}
+                      </NavigationContainer>
+                    </UserProvider>
+                  </StripeProvider>
                 </SordersProvider>
               </ServicesProvider>
             </ListingsProvider>

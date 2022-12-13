@@ -16,18 +16,39 @@ import { COLORS, FONTS } from "../../constants/theme";
 import ServiceOrderCard from "../../components/ServiceOrderCard";
 import AppHeader from "../../components/AppHeader";
 import { useNavigation } from "@react-navigation/native";
+import { OrdersContext } from "../../context/ordersContext";
 
 const OwnerServiceOrders = () => {
   const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation();
   const { sOrders, setSOrders } = React.useContext(SordersContext);
+  const {
+    orders,
+    setOrders,
+    ordersLoading,
+    setOrdersLoading,
+  } = React.useContext(OrdersContext);
 
   const myOrders = sOrders.filter(
     (item) => item.user.uid === auth.currentUser.uid
   );
 
   const getOrders = async () => {
-    console.log("refreshing");
+    setOrdersLoading(true);
+    try {
+      const colRef = collection(db, "orders");
+      const snapshot = await getDocs(colRef);
+      var myData = [];
+      //store the data in an array myData
+      snapshot.forEach((doc) => {
+        myData.push({ ...doc.data() });
+      });
+      setOrders(myData);
+      setOrdersLoading(false);
+    } catch (error) {
+      console.log(error);
+      setOrdersLoading(false);
+    }
   };
   return (
     <>

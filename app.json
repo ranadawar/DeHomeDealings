@@ -4,6 +4,15 @@
     "slug": "DeHomeDealing",
     "version": "1.0.0",
     "orientation": "portrait",
+    "plugins": [
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "",
+          "enableGooglePay": false
+        }
+      ]
+    ],
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {

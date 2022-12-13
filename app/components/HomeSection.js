@@ -5,7 +5,7 @@ import { COLORS, FONTS } from "../constants/theme";
 import AppButton from "./AppButton";
 import servicecolors from "../config/servicecolors";
 import UserContext from "../context/userContext";
-const HomeSection = ({ onPress, name }) => {
+const HomeSection = ({ onPress, name, user }) => {
   React.useEffect(() => {
     console.log("HomeSection");
   }, [name]);
@@ -14,13 +14,15 @@ const HomeSection = ({ onPress, name }) => {
       <Text style={styles.tag}>Hello 👋</Text>
       <Text style={styles.head}>Let's find a dream house</Text>
 
-      <View>
-        <AppButton
-          title="Verify Yourself"
-          color={servicecolors.primary}
-          onPress={onPress}
-        />
-      </View>
+      {user.isVerified && (
+        <View>
+          <AppButton
+            title="Verify Yourself"
+            color={servicecolors.primary}
+            onPress={onPress}
+          />
+        </View>
+      )}
     </View>
   );
 };

@@ -23,7 +23,7 @@ const SeeMyOffersDetail = ({ route }) => {
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
-    console.log("hehhehe", data);
+    console.log("hehhehhehehehehehehhehehehehehehehehe", data);
   }, []);
 
   const myDateFrom = moment(data.dateFrom).format("DD MMM YYYY");

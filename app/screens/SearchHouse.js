@@ -3,12 +3,20 @@ import React from "react";
 import MainScreen from "../components/MainScreen";
 import AppHeader from "../components/AppHeader";
 import { ListingsContext } from "../context/listingContext";
-import { AppForm, AppFormField, SubmitButton } from "../components/form";
+import {
+  AppForm,
+  AppFormField,
+  AppFormPicker,
+  SubmitButton,
+} from "../components/form";
 
 import * as Yup from "yup";
 import { FONTS, COLORS } from "../constants/theme";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CategoryPickerItem from "../components/CategoryPickerItem";
+
+import { areas, cities } from "../data/store";
 
 const initialValues = {
   maxPrice: 0,
@@ -81,7 +89,10 @@ const SearchHouse = () => {
 
   return (
     <MainScreen>
-      <AppHeader titleScreen="Search House" />
+      <AppHeader
+        titleScreen="Search House"
+        onPress={() => navigation.goBack()}
+      />
       <View style={styles.mainContainer}>
         <Text style={styles.title}>Search House</Text>
         <AppForm
@@ -107,10 +118,18 @@ const SearchHouse = () => {
             keyboardType="numeric"
             width="48%"
           />
+          <AppFormPicker
+            items={cities}
+            name="city"
+            placeholder="Select City"
+            PickerItemComponent={CategoryPickerItem}
+            numOfColumns={3}
+          />
+          <AppFormPicker items={areas} name="area" placeholder="Select Area" />
 
           <AppFormField
             name="minArea"
-            placeholder="Min Area"
+            placeholder="Min Area (marla)"
             keyboardType="numeric"
             width="48%"
           />

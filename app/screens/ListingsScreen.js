@@ -1,9 +1,7 @@
 import {
   StyleSheet,
   View,
-  FlatList,
   TouchableOpacity,
-  Alert,
   Modal,
   ScrollView,
   RefreshControl,
@@ -24,9 +22,11 @@ import MainScreen from "../components/MainScreen";
 import AppTextInput from "../components/AppTextInput";
 import { ListingsContext } from "../context/listingContext";
 import { storeInFavorites } from "../global/functions";
+import HeaderTab from "../components/HeaderTab";
 
 const ListingsScreen = ({ navigation }) => {
   const [loading, setLoading] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState("Buy");
 
   const { listings, setListings, loadListings } = React.useContext(
     ListingsContext
@@ -35,7 +35,7 @@ const ListingsScreen = ({ navigation }) => {
 
   React.useEffect(() => {
     console.log("Listings Screen", listings);
-  }, []);
+  }, [activeTab]);
 
   const getLisings = async () => {
     try {
@@ -68,6 +68,21 @@ const ListingsScreen = ({ navigation }) => {
     }
   };
 
+  React.useLayoutEffect(() => {
+    //if activeTab is Buy then filter the listings array and store the filtered array in newData
+    if (activeTab === "Buy") {
+      const filteredData = listings.filter(
+        (item) => item.category.label === "Sell"
+      );
+      setNewData(filteredData);
+    } else {
+      const filteredData = listings.filter(
+        (item) => item.category.label === "Rent"
+      );
+      setNewData(filteredData);
+    }
+  }, [activeTab]);
+
   return (
     <>
       <MainScreen>
@@ -86,16 +101,12 @@ const ListingsScreen = ({ navigation }) => {
             </TouchableOpacity>
             <LargeText style={{ color: COLORS.white }}>Listings</LargeText>
           </View>
+          <View>
+            <HeaderTab activeTab={activeTab} setActiveTab={setActiveTab} />
+          </View>
+
           {listings.length > 0 ? (
             <View style={{ marginHorizontal: 10 }}>
-              <View style={styles.searchBoxStyle}>
-                <AppTextInput
-                  placeholder="Search House"
-                  onChangeText={(text) => handleSearch(text)}
-                  icon="magnify"
-                />
-              </View>
-
               <ScrollView
                 refreshControl={
                   <RefreshControl refreshing={loading} onRefresh={getLisings} />

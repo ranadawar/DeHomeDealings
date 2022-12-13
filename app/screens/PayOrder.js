@@ -14,6 +14,7 @@ import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { OrdersContext } from "../context/ordersContext";
 import { getUserAndSendNotification, randomString } from "../global/functions";
 import { AllUsersContext } from "../context/allUsersContext";
+import AppButton from "../components/AppButton";
 
 const validationSchema = yup.object().shape({
   images: yup.array().min(1, "Please select at least one image"),
@@ -48,8 +49,6 @@ const PayOrder = ({ route }) => {
 
     const docId = randomString(35);
     const updatedData = {
-      images,
-      description,
       uid: auth.currentUser.uid,
       docId,
     };
@@ -57,6 +56,7 @@ const PayOrder = ({ route }) => {
     await updateDoc(doc(db, "orders", data.orderId), {
       paymentStatus: "paid",
       payment: updatedData,
+      paymentMethod: "bank",
     });
 
     const bodyRequest = "Buyer marked the order as paid.";
@@ -90,9 +90,9 @@ const PayOrder = ({ route }) => {
   return (
     <>
       <MainScreen>
-        <AppHeader titleScreen="Payment" />
+        <AppHeader titleScreen="Payment" onPress={() => navigation.goBack()} />
         <View style={styles.mainContainer}>
-          <Text style={styles.title}>Payment</Text>
+          <Text style={styles.title}>Bank Payment</Text>
           <AppForm
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -105,6 +105,14 @@ const PayOrder = ({ route }) => {
               <SubmitButton title="Pay" />
             </View>
           </AppForm>
+          <AppButton
+            title="Owner Bank Details"
+            onPress={() => navigation.navigate("ownerbankdetails", data)}
+          />
+          <AppButton
+            title="Credit Card"
+            onPress={() => navigation.navigate("cardpayment", data)}
+          />
         </View>
       </MainScreen>
 

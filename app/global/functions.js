@@ -31,18 +31,20 @@ export const getUserAndSendNotification = async (
 ) => {
   //find the user with the id in the users array and get the token
   const user = users.find((user) => user.uid === id);
-  const token = user.token;
-  console.log("tokennnnnnnnnnnnnnnnnnnnnnnnn", token);
-  //send notification to the user
-  const message = {
-    to: token,
-    sound: "default",
-    title: "De Home Dealing",
-    body: bodyRequest,
-    data: { route: route },
-  };
+  if (user.token) {
+    const token = user.token;
+    console.log("tokennnnnnnnnnnnnnnnnnnnnnnnn", token);
+    //send notification to the user
+    const message = {
+      to: token,
+      sound: "default",
+      title: "De Home Dealing",
+      body: bodyRequest,
+      data: { route: route },
+    };
 
-  sendNotification(message);
+    sendNotification(message);
+  }
 };
 
 export const storeInFavorites = async (listing) => {
