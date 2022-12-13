@@ -23,8 +23,9 @@ import CategoryPickerItem from "../components/CategoryPickerItem";
 import PersonDetailsContainer from "../components/PersonDetailsContainer";
 import CallToAction from "../components/CallToAction";
 
+import MapView, { Marker } from "react-native-maps";
+
 import QRCode from "react-native-qrcode-svg";
-import WithHeading from "../components/WithHeading";
 function ListingDetailsScreen({ route, navigation }) {
   const data = route.params;
   React.useEffect(() => {
@@ -130,6 +131,16 @@ function ListingDetailsScreen({ route, navigation }) {
           )}
         </View>
 
+        {data.location !== {} && (
+          <View style={styles.locationBtn}>
+            <AppButton
+              title="Owner Location"
+              onPress={() => navigation.navigate("seelocation", data.location)}
+              color="#38b000"
+            />
+          </View>
+        )}
+
         <View style={styles.ownerDetailsContainer}>
           <PersonDetailsContainer
             onPress={() => navigation.navigate("viewfeedbacks")}
@@ -197,6 +208,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 15,
   },
+  locationBtn: {
+    marginVertical: 10,
+    backgroundColor: colors.white,
+    paddingHorizontal: 70,
+  },
   price: {
     color: COLORS.white,
     paddingVertical: 10,
@@ -247,5 +263,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     paddingVertical: 10,
     fontFamily: FONTS.semiBold,
+  },
+  mapBox: {
+    marginVertical: 10,
+    marginHorizontal: 20,
+    borderRadius: 15,
+    overflow: "hidden",
   },
 });

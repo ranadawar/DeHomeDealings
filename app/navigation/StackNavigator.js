@@ -68,6 +68,7 @@ import MapScreen from "../screens/MapScreen";
 import OwnerBankAccount from "../screens/OwnerBankAccount";
 import CardPayment from "../screens/CardPayment";
 import DetailedImage from "../screens/DetailedImage";
+import SeeLocation from "../screens/SeeLocation";
 
 const Stack = createNativeStackNavigator();
 
@@ -163,6 +164,7 @@ const StackNavigator = () => {
       <Stack.Screen name="ownerbankdetails" component={OwnerBankAccount} />
       <Stack.Screen name="cardpayment" component={CardPayment} />
       <Stack.Screen name="detailedImage" component={DetailedImage} />
+      <Stack.Screen name="seelocation" component={SeeLocation} />
     </Stack.Navigator>
   );
 };

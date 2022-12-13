@@ -36,6 +36,7 @@ import moment from "moment";
 import { UserContext } from "../context/userContext";
 import { useContext } from "react";
 import LocationInput from "../components/LocationInput";
+import useLocation from "../hooks/useLocation";
 
 const postAdInitialValues = {
   title: "",
@@ -129,12 +130,18 @@ const ListingEditScreen = ({ navigation }) => {
   const [progress, setProgress] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [urls, setUrls] = useState([]);
+  const [userLocation, setUserLocation] = React.useState({});
+  const theLocation = useLocation();
 
   const { user, setUser } = useContext(UserContext);
 
   React.useEffect(() => {
     console.log("user", user);
-  }, []);
+    setTimeout(() => {
+      setUserLocation(theLocation);
+      console.log(theLocation);
+    }, 2000);
+  }, [theLocation]);
 
   const handleSubmit = async (myValues) => {
     setProgress(0);
@@ -221,6 +228,7 @@ const ListingEditScreen = ({ navigation }) => {
         rating: "5",
         phone: user.phoneNumber,
         offers: [],
+        location: userLocation ? userLocation : {},
       });
       setPosted(true);
       setModalVisible(false);

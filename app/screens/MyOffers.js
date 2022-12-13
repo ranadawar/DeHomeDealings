@@ -20,10 +20,11 @@ const MyOffers = ({ route }) => {
   useEffect(() => {
     console.log("Uuuuuuuuuuuuuuuuuuuuuuuuuuuu", data);
     getBookings();
+    filterData();
   }, []);
 
   const filterData = () => {
-    const filteredData = bookings.filter((item) => item.isAccepted !== true);
+    const filteredData = bookings.filter((item) => item.isAccepted === false);
     setUpdatedBookings(filteredData);
   };
 

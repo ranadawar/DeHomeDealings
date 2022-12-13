@@ -1,4 +1,11 @@
-import { StyleSheet, TouchableOpacity, View, Image, Alert } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+  Text,
+} from "react-native";
 import React from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import {
@@ -12,7 +19,7 @@ import CategoryPickerItem from "../components/CategoryPickerItem";
 
 import * as yup from "yup";
 
-import { COLORS } from "../constants/theme";
+import { COLORS, FONTS } from "../constants/theme";
 import LargeText from "../components/texts/LargeText";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -25,6 +32,7 @@ import { randomString } from "../global/functions";
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
 import moment from "moment";
+import AppButton from "../components/AppButton";
 
 const agreementInitialValues = {
   title: "",
@@ -138,9 +146,7 @@ const AgreementScreen = ({ navigation }) => {
             resizeMode="contain"
             style={styles.image}
           />
-          <LargeText style={{ marginVertical: 15, color: COLORS.primary }}>
-            Make an Agreement
-          </LargeText>
+          <Text style={styles.title}>Make an Agreement</Text>
           <AppForm
             initialValues={agreementInitialValues}
             onSubmit={(values) => submitAgreement(values)}
@@ -170,6 +176,11 @@ const AgreementScreen = ({ navigation }) => {
             />
             <SubmitButton title="Generate Agreement" />
           </AppForm>
+          <AppButton
+            title="Using Templates"
+            onPress={() => navigation.navigate("agreementTemplates")}
+            color={COLORS.secondary}
+          />
         </View>
       </ScrollView>
     </MainScreen>
@@ -192,5 +203,13 @@ const styles = StyleSheet.create({
     height: 175,
     marginVertical: 20,
     alignSelf: "center",
+  },
+  title: {
+    marginVertical: 15,
+    color: COLORS.primary,
+    fontSize: 20,
+    fontFamily: FONTS.bold,
+    color: COLORS.secondary,
+    textAlign: "center",
   },
 });

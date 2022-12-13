@@ -88,7 +88,10 @@ const SendAgreements = ({ route }) => {
               data={agreements}
               keyExtractor={(item) => item.value.toString()}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => addAgreement(item)}>
+                <TouchableOpacity
+                  style={{ marginVertical: 5 }}
+                  onPress={() => addAgreement(item)}
+                >
                   <View style={styles.agreementCard}>
                     <Text style={styles.label}>{item.label}</Text>
                   </View>

@@ -47,6 +47,7 @@ const ViewMyHomeOffers = ({ route }) => {
       });
       //store data in AsyncStorage
       setListings(myData);
+      filterData();
       setLoading(false);
     } catch (error) {
       console.log(error);

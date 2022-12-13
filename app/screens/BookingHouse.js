@@ -29,6 +29,11 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .label("Date To"),
+  price: yup
+
+    .string()
+    .required()
+    .label("Price"),
 });
 
 const buyValidationSchema = yup.object().shape({
@@ -80,11 +85,13 @@ const BookingHouse = ({ route }) => {
     const dateFrom = moment(values.dateFrom).toISOString();
     const dateTo = moment(values.dateTo).toISOString();
     const title = values.title;
+    const price = values.price;
 
     const rentData = {
       title,
       dateFrom,
       dateTo,
+      price,
     };
 
     const docId = randomString(35);
@@ -104,6 +111,7 @@ const BookingHouse = ({ route }) => {
       status: "pending",
       type: "rent",
       messageId: messageId,
+      price: rentData.price,
     })
       .then(() => {
         Alert.alert("Booking Sent");
@@ -212,6 +220,7 @@ const BookingHouse = ({ route }) => {
                 name: "",
                 dateFrom: "",
                 dateTo: "",
+                price: "",
               }}
               onSubmit={(values) => handleRentBooking(values)}
               validationSchema={validationSchema}
@@ -219,6 +228,7 @@ const BookingHouse = ({ route }) => {
               <AppFormField name="title" placeholder="Title" icon="text" />
               <AppFormDatePicker name="dateFrom" placeholder="Date From:" />
               <AppFormDatePicker name="dateTo" placeholder="Date To:" />
+              <AppFormField name="price" placeholder="Price" icon="cash" />
 
               <View style={styles.btn}>
                 <SubmitButton title="Send Booking Request" />
