@@ -11,8 +11,9 @@ import SelectionBtn from "../components/SelectionBtn";
 import MainScreen from "../components/MainScreen";
 import { useNavigation } from "@react-navigation/native";
 
-const PayementsScreen = () => {
+const PayementsScreen = ({ route }) => {
   const navigation = useNavigation();
+  const data = route.params;
   return (
     <MainScreen>
       <View style={styles.mainContainer}>
@@ -31,7 +32,7 @@ const PayementsScreen = () => {
         </View>
 
         <View style={styles.bottomContainer}>
-          <LargeText style={{ fontSize: 26 }}>Add Your</LargeText>
+          <LargeText style={{ fontSize: 26 }}>With Card</LargeText>
           <ExtraLargeText style={{ color: COLORS.primary, fontSize: 32 }}>
             Payment Method
           </ExtraLargeText>
@@ -44,13 +45,10 @@ const PayementsScreen = () => {
           </View>
           <View style={styles.btnContainer}>
             <SelectionBtn
-              title="Add Bank Account"
-              onPress={() => navigation.navigate("bankaccountnumber")}
-            />
-            <SelectionBtn
               icon="credit-card-outline"
-              title="Add Card"
+              title="Pay Now"
               bgColor={COLORS.secondary}
+              onPress={() => navigation.navigate("servicepay", data)}
             />
           </View>
         </View>

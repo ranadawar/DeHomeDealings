@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const useUser = () => {
+export default useUser = () => {
   const [user, setUser] = React.useState({});
 
   const getUser = async () => {
@@ -23,7 +23,3 @@ const useUser = () => {
 
   return user;
 };
-
-export default useUser;
-
-const styles = StyleSheet.create({});

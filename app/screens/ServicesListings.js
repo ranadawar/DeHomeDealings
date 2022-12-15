@@ -11,7 +11,6 @@ import AppHeader from "../components/AppHeader";
 import { useNavigation } from "@react-navigation/native";
 import { ServicesListingsContext } from "../context/servicesContext";
 import { COLORS, FONTS } from "../constants/theme";
-import servicecolors from "../config/servicecolors";
 import ServiceCard from "../components/ServiceCard";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";

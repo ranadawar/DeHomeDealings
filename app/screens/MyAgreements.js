@@ -28,13 +28,12 @@ const validationSchema = yup.object().shape({
   agreement: yup.object().required().nullable().label("Agreement"),
 });
 
-const SendAgreements = ({ route }) => {
+const MyAgreements = () => {
   const navigation = useNavigation();
   const myData = route.params;
   const { users, setUsers } = React.useContext(AllUsersContext);
   const [loading, setLoading] = React.useState(false);
-  const { agreements, loadAgreements, setAgreements, setLoadAgreements } =
-    React.useContext(AgreementsContext);
+  const { agreements, setAgreements } = React.useContext(AgreementsContext);
 
   React.useEffect(() => {
     console.log("Owner added the agreement", myData);
@@ -60,25 +59,6 @@ const SendAgreements = ({ route }) => {
     }
   };
 
-  const docId = myData.bookingId;
-
-  const addAgreement = async (item) => {
-    const updatedData = item;
-    setLoadAgreements(true);
-
-    //add updatedData to firestore doc where bookingId = docId in the bookings collection
-    const docRef = doc(db, "bookings", docId);
-    await updateDoc(docRef, {
-      agreement: updatedData,
-    });
-    setLoadAgreements(false);
-    const bodyRequest = "Owner Added the agreement";
-    const route = "myoffers";
-    getUserAndSendNotification(myData.userData.uid, users, bodyRequest, route);
-    Alert.alert("Agreement Sent", "Agreement has been sent to the client");
-    navigation.goBack();
-  };
-
   return (
     <>
       <MainScreen>
@@ -87,14 +67,7 @@ const SendAgreements = ({ route }) => {
           onPress={() => navigation.goBack()}
         />
         <View style={styles.mainContainer}>
-          <Text style={styles.title}>Send Agreements</Text>
-
-          <View style={styles.btnContainer}>
-            <AppButton
-              title="Create Agreement"
-              onPress={() => navigation.navigate("Agreement")}
-            />
-          </View>
+          <Text style={styles.title}>My Agreements</Text>
 
           <View style={styles.innerContainer}>
             <ScrollView
@@ -112,6 +85,7 @@ const SendAgreements = ({ route }) => {
 
               {agreements.map((item, index) => (
                 <TouchableOpacity
+                  key={index}
                   style={{ marginVertical: 5 }}
                   onPress={() => addAgreement(item)}
                 >
@@ -137,7 +111,7 @@ const SendAgreements = ({ route }) => {
   );
 };
 
-export default SendAgreements;
+export default MyAgreements;
 
 const styles = StyleSheet.create({
   btnContainer: {

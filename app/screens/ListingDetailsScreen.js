@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from "react-native";
 import React from "react";
 import { COLORS, FONTS } from "../constants/theme";
@@ -22,8 +21,6 @@ import AppButton from "../components/AppButton";
 import CategoryPickerItem from "../components/CategoryPickerItem";
 import PersonDetailsContainer from "../components/PersonDetailsContainer";
 import CallToAction from "../components/CallToAction";
-
-import MapView, { Marker } from "react-native-maps";
 
 import QRCode from "react-native-qrcode-svg";
 function ListingDetailsScreen({ route, navigation }) {
@@ -131,7 +128,7 @@ function ListingDetailsScreen({ route, navigation }) {
           )}
         </View>
 
-        {data.location !== {} && (
+        {data.location && (
           <View style={styles.locationBtn}>
             <AppButton
               title="Owner Location"

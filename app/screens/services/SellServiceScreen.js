@@ -30,6 +30,7 @@ import { doc, setDoc } from "firebase/firestore";
 import MainScreen from "../../components/MainScreen";
 import { UserContext } from "../../context/userContext";
 import { randomString } from "../../global/functions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const postAdInitialValues = {
   title: "",
@@ -44,45 +45,14 @@ const postAdInitialValues = {
   rating: "",
 };
 const postAdValidationSchema = yup.object().shape({
-  title: yup
-    .string()
-    .required()
-    .min(4)
-    .max(35)
-    .label("Title"),
-  description: yup
-    .string()
-    .required()
-    .min(15)
-    .label("Description"),
-  price: yup
-    .string()
-    .required()
-    .min(1)
-    .max(12)
-    .label("Price"),
+  title: yup.string().required().min(4).max(35).label("Title"),
+  description: yup.string().required().min(15).label("Description"),
+  price: yup.string().required().min(1).max(12).label("Price"),
 
-  address: yup
-    .string()
-    .required()
-    .min(10)
-    .max(30)
-    .label("Address"),
-  category: yup
-    .object()
-    .required()
-    .nullable()
-    .label("Category"),
-  city: yup
-    .object()
-    .required()
-    .nullable()
-    .label("City"),
-  area: yup
-    .object()
-    .required()
-    .nullable()
-    .label("Area"),
+  address: yup.string().required().min(10).max(30).label("Address"),
+  category: yup.object().required().nullable().label("Category"),
+  city: yup.object().required().nullable().label("City"),
+  area: yup.object().required().nullable().label("Area"),
   userId: yup.string(),
   rating: yup.string(),
   postedTime: "",
@@ -91,7 +61,20 @@ const postAdValidationSchema = yup.object().shape({
 const SellServiceScreen = ({ navigation }) => {
   const [posted, setPosted] = useState(false);
   const [errorPosted, setErrorPosted] = useState(false);
-  const { user, setUser } = React.useContext(UserContext);
+  const [user, setUser] = React.useState({});
+
+  React.useEffect(() => {
+    //get user from async storage
+
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    const user = await AsyncStorage.getItem("user");
+    setUser(JSON.parse(user));
+    console.log("user", user);
+  };
+
   const postData = async (values) => {
     console.log("entered");
     const tareekh = new Date().toDateString();
@@ -102,7 +85,7 @@ const SellServiceScreen = ({ navigation }) => {
         title: values.title,
         description: values.description,
         address: values.address,
-        total: "1000",
+        total: values.price,
         category: values.category,
         city: values.city,
         area: values.area,

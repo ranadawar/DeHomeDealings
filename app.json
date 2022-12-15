@@ -21,7 +21,8 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/730b8dc2-5856-4f8d-b1cc-4b6d1762178e"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -29,7 +30,7 @@
       "infoPlist": {
         "UIBackgroundModes": ["remote-notification"]
       },
-      "bundleIdentifier": "com.ranadawar.DriveAnywhere",
+      "bundleIdentifier": "com.ranadawar.dehomedealing",
       "buildNumber": "1.0.0"
     },
     "android": {
@@ -48,6 +49,9 @@
       "eas": {
         "projectId": "730b8dc2-5856-4f8d-b1cc-4b6d1762178e"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

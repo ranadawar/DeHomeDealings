@@ -11,23 +11,20 @@ import MainScreen from "../../components/MainScreen";
 
 import LottieView from "lottie-react-native";
 import { SordersContext } from "../../context/sOrdersContext";
-import { auth } from "../../../firebase";
+import { auth, db } from "../../../firebase";
 import { COLORS, FONTS } from "../../constants/theme";
 import ServiceOrderCard from "../../components/ServiceOrderCard";
 import AppHeader from "../../components/AppHeader";
 import { useNavigation } from "@react-navigation/native";
 import { OrdersContext } from "../../context/ordersContext";
+import { collection, getDocs } from "firebase/firestore";
 
 const OwnerServiceOrders = () => {
   const [loading, setLoading] = React.useState(false);
   const navigation = useNavigation();
   const { sOrders, setSOrders } = React.useContext(SordersContext);
-  const {
-    orders,
-    setOrders,
-    ordersLoading,
-    setOrdersLoading,
-  } = React.useContext(OrdersContext);
+  const { orders, setOrders, ordersLoading, setOrdersLoading } =
+    React.useContext(OrdersContext);
 
   const myOrders = sOrders.filter(
     (item) => item.user.uid === auth.currentUser.uid
@@ -36,7 +33,7 @@ const OwnerServiceOrders = () => {
   const getOrders = async () => {
     setOrdersLoading(true);
     try {
-      const colRef = collection(db, "orders");
+      const colRef = collection(db, "serviceOrders");
       const snapshot = await getDocs(colRef);
       var myData = [];
       //store the data in an array myData
@@ -60,6 +57,7 @@ const OwnerServiceOrders = () => {
         {myOrders.length > 0 ? (
           <View style={styles.mainContainer}>
             <ScrollView
+              showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={loading} onRefresh={getOrders} />
               }

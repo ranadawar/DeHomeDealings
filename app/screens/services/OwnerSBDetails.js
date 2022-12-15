@@ -33,6 +33,7 @@ const OwnerSBDetails = ({ route }) => {
   const updateTheDoc = async () => {
     const updatedData = {
       orderStarted: true,
+      status: "accepted",
     };
     await updateDoc(doc(db, "serviceBookings", data.bookingId), updatedData);
   };
@@ -59,6 +60,7 @@ const OwnerSBDetails = ({ route }) => {
         const bodyRequest = "Order Started by Service Provider";
         const route = "";
         getUserAndSendNotification(data.user.uid, users, bodyRequest, route);
+        navigation.navigate("oserviceorders");
       })
       .catch((error) => {
         Alert.alert("Error", error.message);

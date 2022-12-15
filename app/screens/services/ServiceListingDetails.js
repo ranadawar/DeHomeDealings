@@ -12,6 +12,7 @@ import colors from "../../config/colors";
 import { FONTS, COLORS } from "../../constants/theme";
 import AppButton from "../../components/AppButton";
 import WithHeading from "../../components/WithHeading";
+import PersonDetailsContainer from "../../components/PersonDetailsContainer";
 
 const ServiceListingDetails = ({ route, navigation }) => {
   const data = route.params;
@@ -31,6 +32,9 @@ const ServiceListingDetails = ({ route, navigation }) => {
           </View>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{data.title}</Text>
+          </View>
+          <View style={styles.titleContainer}>
+            <WithHeading heading="Price:" data={data.total} />
           </View>
           <View style={styles.descriptionContainer}>
             <Text style={styles.descriptionTitle}>Description</Text>
@@ -55,6 +59,10 @@ const ServiceListingDetails = ({ route, navigation }) => {
               }
             />
           </View>
+          <PersonDetailsContainer
+            onPress={() => navigation.navigate("viewfeedbacks")}
+            ownerName={data.postedBy.username}
+          />
         </View>
       </ScrollView>
     </MainScreen>

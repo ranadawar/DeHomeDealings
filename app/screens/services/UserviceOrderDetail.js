@@ -11,6 +11,10 @@ import colors from "../../config/colors";
 const UserviceOrderDetail = ({ route }) => {
   const data = route.params;
   const navigation = useNavigation();
+
+  const handlePayment = () => {
+    navigation.navigate("payment", data);
+  };
   return (
     <MainScreen>
       <AppHeader
@@ -48,6 +52,10 @@ const UserviceOrderDetail = ({ route }) => {
               Linking.openURL(`tel:${data.bookingData.owner.phoneNumber}`)
             }
           />
+        </View>
+
+        <View>
+          <AppButton title="Pay" onPress={() => handlePayment()} />
         </View>
       </View>
     </MainScreen>

@@ -37,6 +37,7 @@ import { UserContext } from "../context/userContext";
 import { useContext } from "react";
 import LocationInput from "../components/LocationInput";
 import useLocation from "../hooks/useLocation";
+import useUser from "../hooks/useUser";
 
 const postAdInitialValues = {
   title: "",
@@ -57,67 +58,17 @@ const postAdInitialValues = {
   phone: "",
 };
 const postAdValidationSchema = yup.object().shape({
-  title: yup
-    .string()
-    .required()
-    .min(4)
-    .max(35)
-    .label("Title"),
-  description: yup
-    .string()
-    .required()
-    .min(15)
-    .label("Description"),
-  address: yup
-    .string()
-    .required()
-    .min(10)
-    .max(30)
-    .label("Address"),
-  total: yup
-    .number()
-    .required()
-    .min(1000)
-    .max(1000000000)
-    .label("Total"),
-  size: yup
-    .number()
-    .required()
-    .min(1)
-    .max(1000)
-    .label("Size"),
-  bedrooms: yup
-    .number()
-    .required()
-    .min(1)
-    .max(10)
-    .label("Bedrooms"),
-  bathrooms: yup
-    .number()
-    .required()
-    .min(1)
-    .max(10)
-    .label("Bathrooms"),
-  category: yup
-    .object()
-    .required()
-    .nullable()
-    .label("Category"),
-  city: yup
-    .object()
-    .required()
-    .nullable()
-    .label("City"),
-  area: yup
-    .object()
-    .required()
-    .nullable()
-    .label("Area"),
-  propertyType: yup
-    .object()
-    .required()
-    .nullable()
-    .label("Property Type"),
+  title: yup.string().required().min(4).max(35).label("Title"),
+  description: yup.string().required().min(15).label("Description"),
+  address: yup.string().required().min(10).max(30).label("Address"),
+  total: yup.number().required().min(1000).max(1000000000).label("Total"),
+  size: yup.number().required().min(1).max(1000).label("Size"),
+  bedrooms: yup.number().required().min(1).max(10).label("Bedrooms"),
+  bathrooms: yup.number().required().min(1).max(10).label("Bathrooms"),
+  category: yup.object().required().nullable().label("Category"),
+  city: yup.object().required().nullable().label("City"),
+  area: yup.object().required().nullable().label("Area"),
+  propertyType: yup.object().required().nullable().label("Property Type"),
   userId: yup.string(),
   image: yup.array().min(1, "Please select at least one image."),
   rating: yup.string(),
@@ -126,17 +77,18 @@ const postAdValidationSchema = yup.object().shape({
 
 const ListingEditScreen = ({ navigation }) => {
   const [posted, setPosted] = useState(false);
-  const [errorPosted, setErrorPosted] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [setErrorPosted] = useState(false);
+  const [setProgress] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
-  const [urls, setUrls] = useState([]);
+  const [setUrls] = useState([]);
   const [userLocation, setUserLocation] = React.useState({});
   const theLocation = useLocation();
 
-  const { user, setUser } = useContext(UserContext);
+  const user = useUser();
 
   React.useEffect(() => {
     console.log("user", user);
+
     setTimeout(() => {
       setUserLocation(theLocation);
       console.log(theLocation);
@@ -161,10 +113,10 @@ const ListingEditScreen = ({ navigation }) => {
       //create blob
       const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
-        xhr.onload = function() {
+        xhr.onload = function () {
           resolve(xhr.response);
         };
-        xhr.onerror = function(e) {
+        xhr.onerror = function (e) {
           console.log(e);
           reject(new TypeError("Network request failed"));
         };
@@ -228,7 +180,7 @@ const ListingEditScreen = ({ navigation }) => {
         rating: "5",
         phone: user.phoneNumber,
         offers: [],
-        location: userLocation ? userLocation : {},
+        location: userLocation ? userLocation : false,
       });
       setPosted(true);
       setModalVisible(false);

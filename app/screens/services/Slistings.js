@@ -84,36 +84,34 @@ const Slistings = ({ navigation, route }) => {
         )}
         {!dataLength && (
           <View style={{ flex: 1, backgroundColor: colors.light }}>
-            <ScrollView>
-              <View style={styles.headingContainer}>
-                <TouchableOpacity
-                  onPress={() => navigation.goBack()}
-                  style={styles.iconContainer}
-                >
-                  <MaterialCommunityIcons
-                    name="chevron-left"
-                    size={30}
-                    color={COLORS.primary}
-                  />
-                </TouchableOpacity>
-                <ExtraLargeText>{label}</ExtraLargeText>
-              </View>
-              <View style={styles.listingContainer}>
-                <FlatList
-                  data={listings}
-                  keyExtractor={(item) => item.description}
-                  renderItem={({ item }) => (
-                    <ServiceCard
-                      title={item.title}
-                      price={item.total}
-                      onPress={() =>
-                        navigation.navigate("servicelistingdetails", item)
-                      }
-                    />
-                  )}
+            <View style={styles.headingContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={styles.iconContainer}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  size={30}
+                  color={COLORS.primary}
                 />
-              </View>
-            </ScrollView>
+              </TouchableOpacity>
+              <ExtraLargeText>{label}</ExtraLargeText>
+            </View>
+            <View style={styles.listingContainer}>
+              <FlatList
+                data={listings}
+                keyExtractor={(item) => item.description}
+                renderItem={({ item }) => (
+                  <ServiceCard
+                    title={item.title}
+                    price={item.total}
+                    onPress={() =>
+                      navigation.navigate("servicelistingdetails", item)
+                    }
+                  />
+                )}
+              />
+            </View>
           </View>
         )}
       </MainScreen>

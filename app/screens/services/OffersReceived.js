@@ -65,17 +65,21 @@ const OffersReceived = () => {
         />
         {updatedData.length > 0 ? (
           <View style={styles.main}>
-            <Text style={styles.title}>Offers Received</Text>
-            <FlatList
-              data={updatedData}
-              keyExtractor={(item) => item.bookingId}
-              renderItem={({ item }) => (
-                <ServiceBookingCard
-                  data={item}
-                  onPress={() => navigation.navigate("ownersbdetails", item)}
-                />
-              )}
-            />
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={getOffers} />
+              }
+            >
+              <Text style={styles.title}>Offers Received</Text>
+              {updatedData.map((item, index) => (
+                <View key={index}>
+                  <ServiceBookingCard
+                    data={item}
+                    onPress={() => navigation.navigate("ownersbdetails", item)}
+                  />
+                </View>
+              ))}
+            </ScrollView>
           </View>
         ) : (
           <View style={styles.noMain}>

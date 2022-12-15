@@ -1,4 +1,11 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
+import {
+  Modal,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 
 import { db, auth } from "../../firebase";
@@ -10,11 +17,13 @@ import AppHeader from "../components/AppHeader";
 import { COLORS, FONTS } from "../constants/theme";
 import colors from "../config/colors";
 import WithHeading from "../components/WithHeading";
+import { useNavigation } from "@react-navigation/native";
 
 const ShowPayments = () => {
   const [loading, setLoading] = React.useState(false);
 
   const [payments, setPayments] = React.useState([]);
+  const navigation = useNavigation();
 
   React.useEffect(() => {
     getPayments();
@@ -44,29 +53,48 @@ const ShowPayments = () => {
   return (
     <>
       <MainScreen>
-        <AppHeader titleScreen="Payments Record" />
+        <AppHeader
+          titleScreen="Payments Record"
+          onPress={() => navigation.goBack()}
+        />
         <View style={styles.mainContainer}>
           <Text style={styles.title}>User's Past Payments</Text>
+
           {payments.length > 0 ? (
-            <View style={{ flex: 1 }}>
-              {payments.map((item, index) => (
-                <View style={styles.mainCard} key={index}>
-                  <WithHeading heading="Total Amount" data={item.price} />
-                  <WithHeading
-                    heading="Transaction Date:"
-                    data={item.orderPlacedAt}
-                  />
-                  <WithHeading heading="Sent By:" data={item.user.username} />
-                  <WithHeading
-                    heading="Received By:"
-                    data={item.owner.username}
-                  />
-                </View>
-              ))}
-            </View>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={getPayments} />
+              }
+            >
+              <View style={{ flex: 1 }}>
+                {payments.map((item, index) => (
+                  <View style={styles.mainCard} key={index}>
+                    <WithHeading heading="Total Amount" data={item.price} />
+                    <WithHeading
+                      heading="Transaction Date:"
+                      data={item.orderPlacedAt}
+                    />
+                    <WithHeading heading="Sent By:" data={item.user.username} />
+                    <WithHeading
+                      heading="Received By:"
+                      data={item.owner.username}
+                    />
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
           ) : (
             <View style={{ flex: 1, justifyContent: "center" }}>
-              <Text style={styles.noData}>No Record Found</Text>
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={loading}
+                    onRefresh={getPayments}
+                  />
+                }
+              >
+                <Text style={styles.noData}>No Record Found</Text>
+              </ScrollView>
             </View>
           )}
         </View>
@@ -108,5 +136,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     backgroundColor: COLORS.white,
     borderRadius: 20,
+    marginVertical: 10,
+    padding: 12,
   },
 });

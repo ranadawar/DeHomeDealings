@@ -11,10 +11,21 @@ const ReportsScreen = ({ navigation }) => {
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.innerContainer}>
-            <ReportsComponent icon="file-eye" text="Viewed Listings" />
-            <ReportsComponent icon="ticket-account" text="Previous Bookings" />
-            <ReportsComponent icon="account-cash" text="Payments" />
-            <ReportsComponent icon="file-sign" text="Agreements" />
+            <ReportsComponent
+              icon="file-eye"
+              text="Liked Listings"
+              onPress={() => navigation.navigate("showfav")}
+            />
+            <ReportsComponent
+              icon="ticket-account"
+              text="Previous Bookings"
+              onPress={() => navigation.navigate("previousbookings")}
+            />
+            <ReportsComponent
+              icon="account-cash"
+              text="Payments"
+              onPress={() => navigation.navigate("showpayments")}
+            />
           </View>
         </ScrollView>
       </View>
@@ -24,4 +35,11 @@ const ReportsScreen = ({ navigation }) => {
 
 export default ReportsScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  innerContainer: {
+    flex: 1,
+  },
+});

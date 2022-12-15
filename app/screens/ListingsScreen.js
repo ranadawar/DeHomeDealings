@@ -28,9 +28,8 @@ const ListingsScreen = ({ navigation }) => {
   const [loading, setLoading] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState("Buy");
 
-  const { listings, setListings, loadListings } = React.useContext(
-    ListingsContext
-  );
+  const { listings, setListings, loadListings } =
+    React.useContext(ListingsContext);
   const [newData, setNewData] = React.useState(listings);
 
   React.useEffect(() => {
@@ -108,6 +107,7 @@ const ListingsScreen = ({ navigation }) => {
           {listings.length > 0 ? (
             <View style={{ marginHorizontal: 10 }}>
               <ScrollView
+                showsVerticalScrollIndicator={false}
                 refreshControl={
                   <RefreshControl refreshing={loading} onRefresh={getLisings} />
                 }

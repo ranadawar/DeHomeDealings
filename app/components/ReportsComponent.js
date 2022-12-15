@@ -5,9 +5,9 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { COLORS, FONTS } from "../constants/theme";
 
-const ReportsComponent = ({ icon = "email", text = "Email" }) => {
+const ReportsComponent = ({ icon = "email", text = "Email", onPress }) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity onPress={onPress} style={styles.container}>
       <MaterialCommunityIcons name={icon} size={60} color={COLORS.primary} />
       <Text style={styles.texto}>{text}</Text>
     </TouchableOpacity>

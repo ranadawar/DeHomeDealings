@@ -8,21 +8,33 @@ const MessageCard = ({ user, message = "This is my message", image, time }) => {
   return (
     <View
       style={
-        user === auth.currentUser.uid ? styles.myMessage : styles.otherMessage
+        user.uid === auth.currentUser.uid
+          ? styles.myMessage
+          : styles.otherMessage
       }
     >
       <View>
-        <Text style={styles.sentText}>{user.username}</Text>
+        <Text
+          style={
+            user.uid === auth.currentUser.uid ? styles.textMe : styles.textOther
+          }
+        >
+          {user.username}
+        </Text>
       </View>
       <Text
-        style={user === auth.currentUser.uid ? styles.textMe : styles.textOther}
+        style={
+          user.uid === auth.currentUser.uid ? styles.textMe : styles.textOther
+        }
       >
         {message}
       </Text>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       {/* //time */}
       <Text
-        style={user === auth.currentUser.uid ? styles.timeMe : styles.timeOther}
+        style={
+          user.uid === auth.currentUser.uid ? styles.timeMe : styles.timeOther
+        }
       >
         {time}
       </Text>
@@ -40,12 +52,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   myMessage: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.primary,
     padding: 10,
     marginVertical: 5,
     marginHorizontal: 10,
     borderRadius: 10,
-    alignSelf: "flex-start",
+    alignSelf: "flex-end",
   },
   otherMessage: {
     backgroundColor: COLORS.white,
@@ -63,7 +75,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   textOther: {
-    color: colors.medium,
+    color: COLORS.primary,
     fontSize: 14,
     fontFamily: FONTS.regular,
     padding: 5,
@@ -75,7 +87,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   timeOther: {
-    color: colors.medium,
+    color: COLORS.primary,
     fontSize: 8,
     fontFamily: FONTS.regular,
     alignSelf: "flex-end",

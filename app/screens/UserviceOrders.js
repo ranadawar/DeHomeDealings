@@ -11,11 +11,12 @@ import MainScreen from "../components/MainScreen";
 
 import LottieView from "lottie-react-native";
 import { SordersContext } from "../context/sOrdersContext";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { COLORS, FONTS } from "../constants/theme";
 import ServiceOrderCard from "../components/ServiceOrderCard";
 import AppHeader from "../components/AppHeader";
 import { useNavigation } from "@react-navigation/native";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 const UserviceOrders = () => {
   const [loading, setLoading] = React.useState(false);
@@ -27,7 +28,24 @@ const UserviceOrders = () => {
   );
 
   const getOrders = async () => {
-    console.log("refreshing");
+    //get all the docs from serviceOrders collection where user.uid is equal to auth.currentUser.uid
+    try {
+      setLoading(true);
+      const q = query(
+        collection(db, "serviceOrders"),
+        where("user.uid", "==", auth.currentUser.uid)
+      );
+      const querySnapshot = await getDocs(q);
+      var myData = [];
+      querySnapshot.forEach((doc) => {
+        myData.push({ ...doc.data() });
+      });
+      setSOrders(myData);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
   return (
     <>
@@ -39,6 +57,7 @@ const UserviceOrders = () => {
         {myOrders.length > 0 ? (
           <View style={styles.mainContainer}>
             <ScrollView
+              showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl refreshing={loading} onRefresh={getOrders} />
               }
@@ -60,7 +79,13 @@ const UserviceOrders = () => {
           </View>
         ) : (
           <View style={styles.noMainContainer}>
-            <Text style={styles.noText}>No Orders</Text>
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={getOrders} />
+              }
+            >
+              <Text style={styles.noText}>No Orders</Text>
+            </ScrollView>
           </View>
         )}
       </MainScreen>
@@ -91,6 +116,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textAlign: "center",
   },
-  noMainContainer: {},
-  noText: {},
+  noMainContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noText: {
+    fontSize: 20,
+    color: COLORS.secondary,
+    fontFamily: FONTS.bold,
+  },
 });

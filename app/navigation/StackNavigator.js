@@ -21,7 +21,6 @@ import Slistings from "../screens/services/Slistings";
 import ServicesDetailsScreen from "../screens/services/ServicesDetailsScreen";
 import ReportProblemScreen from "../screens/ReportProblemScreen";
 import AgreementDetailScreen from "../screens/AgreementDetailScreen";
-import InboxScreen from "../screens/InboxScreen";
 import AddBankAccountNumber from "../screens/paymentScreens/AddBankAccountNumber";
 import ServiceListingDetails from "../screens/services/ServiceListingDetails";
 import QrCodeScanner from "../screens/QrCodeScanner";
@@ -69,6 +68,11 @@ import OwnerBankAccount from "../screens/OwnerBankAccount";
 import CardPayment from "../screens/CardPayment";
 import DetailedImage from "../screens/DetailedImage";
 import SeeLocation from "../screens/SeeLocation";
+import SearchedListings from "../screens/SearchedListings";
+import ServicePaymentCard from "../screens/ServicePaymentCard";
+import PreviousBookings from "../screens/PreviousBookings";
+import AgreementTemplates from "../screens/AgreementTemplates";
+import MyAgreements from "../screens/MyAgreements";
 
 const Stack = createNativeStackNavigator();
 
@@ -86,7 +90,6 @@ const StackNavigator = () => {
       <Stack.Screen name="preview" component={AgreementDetailScreen} />
       <Stack.Screen name="Listings" component={ListingsScreen} />
       <Stack.Screen name="Mylisting" component={MyListings} />
-      <Stack.Screen name="inbox" component={InboxScreen} />
       <Stack.Screen name="qrcodescanner" component={QrCodeScanner} />
       <Stack.Screen name="qrDetails" component={QrCodeListingDetails} />
       <Stack.Screen name="BookingHouse" component={BookingHouse} />
@@ -165,6 +168,11 @@ const StackNavigator = () => {
       <Stack.Screen name="cardpayment" component={CardPayment} />
       <Stack.Screen name="detailedImage" component={DetailedImage} />
       <Stack.Screen name="seelocation" component={SeeLocation} />
+      <Stack.Screen name="searchedlistings" component={SearchedListings} />
+      <Stack.Screen name="servicepay" component={ServicePaymentCard} />
+      <Stack.Screen name="previousbookings" component={PreviousBookings} />
+      <Stack.Screen name="agreementTemplates" component={AgreementTemplates} />
+      <Stack.Screen name="myagreementss" component={MyAgreements} />
     </Stack.Navigator>
   );
 };

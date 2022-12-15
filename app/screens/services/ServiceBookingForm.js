@@ -20,31 +20,14 @@ import {
   randomString,
 } from "../../global/functions";
 import { AllUsersContext } from "../../context/allUsersContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const validationSchema = yup.object().shape({
-  location: yup
-    .string()
-    .required()
-    .min(1)
-    .label("Location"),
-  date: yup
-    .date()
-    .required("Required")
-    .label("Date"),
-  time: yup
-    .date()
-    .required("Required")
-    .label("Date"),
-  description: yup
-    .string()
-    .required()
-    .min(1)
-    .label("Description"),
-  message: yup
-    .string()
-    .required()
-    .min(1)
-    .label("Message"),
+  location: yup.string().required().min(1).label("Location"),
+  date: yup.date().required("Required").label("Date"),
+  time: yup.date().required("Required").label("Date"),
+  description: yup.string().required().min(1).label("Description"),
+  message: yup.string().required().min(1).label("Message"),
 });
 
 const initialValues = {
@@ -60,11 +43,17 @@ const ServiceBookingForm = ({ route }) => {
   const serviceListing = route.params;
   const [currentListing, setCurrentListing] = React.useState(serviceListing);
   const [loading, setLoading] = React.useState(false);
-  const { user, setUser } = React.useContext(UserContext);
+  const [user, setUser] = React.useState({});
   const { users, setUsers } = React.useContext(AllUsersContext);
   React.useEffect(() => {
     console.log(currentListing);
+    getUser();
   }, []);
+
+  const getUser = async () => {
+    const user = await AsyncStorage.getItem("user");
+    setUser(JSON.parse(user));
+  };
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -86,6 +75,7 @@ const ServiceBookingForm = ({ route }) => {
       bookingId: bookingId,
       owner: currentListing.postedBy,
       total: currentListing.total,
+      listing: currentListing,
     };
 
     await setDoc(doc(db, "serviceBookings", bookingId), data).then(() => {

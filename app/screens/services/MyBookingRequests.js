@@ -68,18 +68,22 @@ const MyBookingRequests = () => {
         {updatedData.length > 0 ? (
           <View style={styles.mainContainer}>
             <Text style={styles.title}>My Booking Requests</Text>
-            <FlatList
-              data={updatedData}
-              keyExtractor={(item) => item.bookingId}
-              renderItem={({ item }) => (
-                <ServiceBookingCard
-                  data={item}
-                  onPress={() =>
-                    navigation.navigate("servicebookingdetails", item)
-                  }
-                />
-              )}
-            />
+            <ScrollView
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={getBookings} />
+              }
+            >
+              {updatedData.map((item, index) => (
+                <View key={index}>
+                  <ServiceBookingCard
+                    data={item}
+                    onPress={() =>
+                      navigation.navigate("servicebookingdetails", item)
+                    }
+                  />
+                </View>
+              ))}
+            </ScrollView>
           </View>
         ) : (
           <View style={styles.noMainContainer}>

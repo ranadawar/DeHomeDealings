@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, LogBox } from "react-native";
 import React, { useState } from "react";
 
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
@@ -28,6 +28,7 @@ const theme = {
 
 const App = () => {
   const [user, setUser] = useState(null);
+  LogBox.ignoreAllLogs();
   React.useEffect(() => {
     firebaseAuthState();
   }, []);

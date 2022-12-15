@@ -26,65 +26,52 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object().shape({
-  maxPrice: Yup.number()
-    .required()
-    .min(1)
-    .label("Max Price"),
-  numberOfBedrooms: Yup.number()
-    .required()
-    .min(1)
-    .label("Number of Bedrooms"),
+  maxPrice: Yup.number().required().min(1).label("Max Price"),
+  numberOfBedrooms: Yup.number().required().min(1).label("Number of Bedrooms"),
   numberOfBathrooms: Yup.number()
     .required()
     .min(1)
     .label("Number of Bathrooms"),
-  minArea: Yup.number()
-    .required()
-    .min(1)
-    .label("Min Area"),
+  city: Yup.object().required().label("City"),
+  area: Yup.object().required().label("Area"),
+  minArea: Yup.number().required().min(1).label("Min Area"),
 });
 
 const SearchHouse = () => {
   const [loading, setLoading] = React.useState(false);
+  const [theArray, setTheArray] = React.useState([]);
 
-  const {
-    listings,
-    setListings,
-    loadListings,
-    setLoadListings,
-  } = React.useContext(ListingsContext);
+  const { listings, setListings, loadListings, setLoadListings } =
+    React.useContext(ListingsContext);
   const [filtered, setFiltered] = React.useState(listings);
   const navigation = useNavigation();
 
-  const handleSubmit = (values) => {
-    const myMaxPrice = values.maxPrice;
-    const myNumberOfBedrooms = values.numberOfBedrooms;
-    const myNumberOfBathrooms = values.numberOfBathrooms;
-    const myMinArea = values.minArea;
+  const handleSearch = (values) => {
+    const myMaxPrice = parseInt(values.maxPrice);
+    const myNmberOfBedrooms = parseInt(values.numberOfBedrooms);
+    const myNumberOfBathrooms = parseInt(values.numberOfBathrooms);
+    const myCity = values.city.label;
+    const myMinArea = parseInt(values.minArea);
+    const myArea = values.area;
 
-    const filteredListings = listings.filter(
-      (item) =>
-        item.total <= myMaxPrice ||
-        item.bedrooms >= myNumberOfBedrooms ||
-        item.bathrooms >= myNumberOfBathrooms ||
-        item.area.value >= myMinArea
-    );
+    const result = listings.filter((item) => {
+      return (
+        item.total <= myMaxPrice &&
+        item.bathrooms >= myNumberOfBathrooms &&
+        item.bedrooms >= myNmberOfBedrooms &&
+        item.city?.label === myCity &&
+        item.area?.label === myArea &&
+        item.size <= myMinArea
+      );
+    });
 
-    if (filteredListings.length > 0) {
-      setFiltered(filteredListings);
+    if (result.length > 0) {
+      setTheArray(result);
+      navigation.navigate("searchedlistings", theArray);
     } else {
-      setFiltered(listings);
+      setTheArray(listings);
+      navigation.navigate("searchedlistings", theArray);
     }
-    addToRecommended(filteredListings);
-    navigation.navigate("searchresults", filtered);
-  };
-
-  const addToRecommended = async (filteredListings) => {
-    //merge this array in the recommended array stored in AsyncStorage
-    const recommended = await AsyncStorage.getItem("recommended");
-    const recommendedArray = JSON.parse(recommended);
-    const mergedArray = [...recommendedArray, ...filteredListings];
-    await AsyncStorage.setItem("recommended", JSON.stringify(mergedArray));
   };
 
   return (
@@ -97,7 +84,7 @@ const SearchHouse = () => {
         <Text style={styles.title}>Search House</Text>
         <AppForm
           initialValues={initialValues}
-          onSubmit={(values) => handleSubmit(values)}
+          onSubmit={(values) => handleSearch(values)}
           validationSchema={validationSchema}
         >
           <AppFormField
@@ -108,13 +95,13 @@ const SearchHouse = () => {
           />
           <AppFormField
             name="numberOfBedrooms"
-            placeholder="Number of Bedrooms"
+            placeholder="Min. Number of Bedrooms"
             keyboardType="numeric"
             width="48%"
           />
           <AppFormField
             name="numberOfBathrooms"
-            placeholder="Number of Bathrooms"
+            placeholder="Min. Number of Bathrooms"
             keyboardType="numeric"
             width="48%"
           />

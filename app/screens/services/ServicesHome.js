@@ -8,13 +8,8 @@ import {
 import React from "react";
 import MediumText from "../../components/texts/MediumText";
 import ExtraLargeText from "../../components/texts/ExtraLargeText";
-import SearchBoxServices from "../../components/SearchBoxServices";
 import servicecolors from "../../config/servicecolors";
-import ServiceItem from "../../components/ServiceItem";
 
-import ServiceCard from "../../components/ServiceCard";
-import { db } from "../../../firebase";
-import { collection, getDocs } from "firebase/firestore";
 import { ServicesListingsContext } from "../../context/servicesContext";
 import AppButton from "../../components/AppButton";
 import { UserContext } from "../../context/userContext";

@@ -20,7 +20,6 @@ const ViewTheAgreement = ({ route }) => {
       const html = `<html>
       <body>
         <div style="align-items: center; justify-content: center">
-         
           <h1>De Home Dealing</h1>
         </div>
         <div>

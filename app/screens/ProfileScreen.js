@@ -10,8 +10,9 @@ import MainScreen from "../components/MainScreen";
 import LottieView from "lottie-react-native";
 import { UserContext } from "../context/userContext";
 import servicecolors from "../config/servicecolors";
+import useUser from "../hooks/useUser";
 const ProfileScreen = ({ navigation }) => {
-  const { user, userDataLoading } = React.useContext(UserContext);
+  const user = useUser();
   const [name, setName] = React.useState("");
 
   return (
@@ -29,7 +30,11 @@ const ProfileScreen = ({ navigation }) => {
             <View style={styles.imageContainer}>
               <Image
                 resizeMode="contain"
-                source={require("../../assets/images/many/mosh.jpg")}
+                source={
+                  user.profileImage
+                    ? { uri: user.profileImage }
+                    : require("../../assets/images/many/mosh.jpg")
+                }
                 style={styles.image}
               />
             </View>
@@ -68,18 +73,6 @@ const ProfileScreen = ({ navigation }) => {
               onPress={() => navigation.navigate("Reports")}
             />
             <LinkComponents
-              title="Favorites"
-              iconStyle="blue"
-              icon="heart"
-              onPress={() => navigation.navigate("showfav")}
-            />
-            <LinkComponents
-              title="Payments"
-              iconStyle="green"
-              icon="cash"
-              onPress={() => navigation.navigate("showpayments")}
-            />
-            <LinkComponents
               title="Services Listings Offers"
               iconStyle="brown"
               icon="face-man"
@@ -102,12 +95,6 @@ const ProfileScreen = ({ navigation }) => {
               iconStyle="green"
               icon="face-man"
               onPress={() => navigation.navigate("oserviceorders")}
-            />
-            <LinkComponents
-              title="Map"
-              iconStyle="green"
-              icon="face-man"
-              onPress={() => navigation.navigate("mapscreen")}
             />
           </View>
           <View style={styles.bottomContainer}>
@@ -137,15 +124,6 @@ const ProfileScreen = ({ navigation }) => {
           </View>
         </ScrollView>
       </MainScreen>
-      <Modal visible={userDataLoading}>
-        <View style={{ flex: 1 }}>
-          <LottieView
-            source={require("../../assets/animations/house.json")}
-            autoPlay
-            loop
-          />
-        </View>
-      </Modal>
     </>
   );
 };
